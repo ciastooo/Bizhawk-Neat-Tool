@@ -52,14 +52,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj">
+    <ProjectReference Include="..\BizHawk-master\BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj">
       <Project>{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}</Project>
       <Name>BizHawk.Client.ApiHawk</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
+    <ProjectReference Include="..\BizHawk-master\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
       <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
       <Name>BizHawk.Client.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
