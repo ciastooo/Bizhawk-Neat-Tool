@@ -6,6 +6,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CustomMainForm : Form, IExternalToolForm
 	{
+        [RequiredApi]
+        private JoypadApi Joypad { get; set; }
+
 		public CustomMainForm()
 		{
 			InitializeComponent();
@@ -33,9 +36,32 @@ namespace BizHawk.Client.EmuHawk
             InitializeComponent();
         }
 
-		public void UpdateValues()
+        public void UpdateValues()
 		{
 			
 		}
-	}
+
+        private void Sel_Click(object sender, System.EventArgs e)
+        {
+            var a = Joypad.Get();
+            var b = Joypad.Get(1);
+            var c = Joypad.Get(2);
+            Joypad.Set("A", true, 1);
+        }
+
+        private void Lewo_Click(object sender, System.EventArgs e)
+        {
+            Joypad.Set("Left", true, 1);
+        }
+
+        private void Prawo_Click(object sender, System.EventArgs e)
+        {
+            Joypad.Set("Right", true, 1);
+        }
+
+        private void Góra_Click(object sender, System.EventArgs e)
+        {
+            Joypad.Set("Start", true, 1);
+        }
+    }
 }

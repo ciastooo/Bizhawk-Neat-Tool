@@ -64,6 +64,11 @@
   <ItemGroup>
     <Content Include=".gitignore" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CustomMainForm.resx">
+      <DependentUpon>CustomMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)output\ExternalTools\$(ProjectName).dll"</PostBuildEvent>
