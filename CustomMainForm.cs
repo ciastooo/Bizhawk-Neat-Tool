@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public bool UpdateBefore => throw new System.NotImplementedException();
+        public bool UpdateBefore => true;
 
 		public bool AskSaveChanges()
 		{
@@ -25,17 +25,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NewUpdate(ToolFormUpdateType type)
 		{
-			throw new System.NotImplementedException();
+		
 		}
 
 		public void Restart()
 		{
-			throw new System.NotImplementedException();
-		}
+            InitializeComponent();
+        }
 
 		public void UpdateValues()
 		{
-			throw new System.NotImplementedException();
+			
 		}
 	}
 }
