@@ -49,6 +49,12 @@
     <Compile Include="CustomMainForm.Designer.cs">
       <DependentUpon>CustomMainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\RandomGenerator.cs" />
+    <Compile Include="Neat\ConnectionGene.cs" />
+    <Compile Include="Neat\Genome.cs" />
+    <Compile Include="Neat\NodeGene.cs" />
+    <Compile Include="Neat\NodeGeneType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
