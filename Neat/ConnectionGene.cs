@@ -1,4 +1,4 @@
-﻿using BizhawkNEAT.Helpers;
+﻿using BizhawkNEAT.Utils;
 
 namespace BizhawkNEAT.Neat
 {

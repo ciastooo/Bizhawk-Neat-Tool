@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizhawkNEAT.Helpers
+namespace BizhawkNEAT.Utils
 {
     public static class Extensions
     {
