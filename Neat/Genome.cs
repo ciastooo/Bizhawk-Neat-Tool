@@ -6,13 +6,13 @@ namespace BizhawkNEAT.Neat
 {
     public class Genome
     {
-        public IList<ConnectionGene> ConnectionGenes { get; set; }
-        public IList<NodeGene> NodeGenes { get; set; }
+        public Dictionary<int, ConnectionGene> ConnectionGenes { get; set; }
+        public Dictionary<int, NodeGene> NodeGenes { get; set; }
 
         public Genome()
         {
-            ConnectionGenes = new List<ConnectionGene>();
-            NodeGenes = new List<NodeGene>();
+            ConnectionGenes = new Dictionary<int, ConnectionGene>();
+            NodeGenes = new Dictionary<int, NodeGene>();
         }
 
         public void Mutate()
@@ -24,12 +24,12 @@ namespace BizhawkNEAT.Neat
         {
             var firstNode = NodeGenes.GetRandomElement();
             var secondNode = NodeGenes.GetRandomElement();
-            while(firstNode == secondNode || ConnectionGenes.GetConnection(firstNode, secondNode) != null)
+            while (firstNode == secondNode || ConnectionGenes.GetConnection(firstNode, secondNode) != null)
             {
                 secondNode = NodeGenes.GetRandomElement();
             }
 
-            if(firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Hidden ||
+            if (firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Hidden ||
                firstNode.Type == NodeGeneType.Hidden && secondNode.Type == NodeGeneType.Input ||
                firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Input)
             {
@@ -38,8 +38,8 @@ namespace BizhawkNEAT.Neat
                 firstNode = tmp;
             }
 
-            var newConnection = new ConnectionGene(IdGenerator.Next(), firstNode, secondNode);
-            ConnectionGenes.Add(newConnection);
+            var newConnection = new ConnectionGene(firstNode, secondNode);
+            ConnectionGenes.Add(IdGenerator.NextConnectionId(), newConnection);
         }
 
         public void AddNode()
@@ -64,31 +64,31 @@ namespace BizhawkNEAT.Neat
 
             connection.IsDisabled = true;
 
-            var newNode = new NodeGene(NodeGenes.Count);
-            NodeGenes.Add(newNode);
+            var newNode = new NodeGene();
+            NodeGenes.Add(IdGenerator.NextNodeId(), newNode);
 
-            var newPreviousConnection = new ConnectionGene(IdGenerator.Next(), firstNode, newNode, 1);
-            ConnectionGenes.Add(newPreviousConnection);
+            var newPreviousConnection = new ConnectionGene(firstNode, newNode, 1);
+            ConnectionGenes.Add(IdGenerator.NextConnectionId(), newPreviousConnection);
 
-            var newNextConnection = new ConnectionGene(IdGenerator.Next(), newNode, secondNode, connection.Weight);
-            ConnectionGenes.Add(newNextConnection);
+            var newNextConnection = new ConnectionGene(newNode, secondNode, connection.Weight);
+            ConnectionGenes.Add(IdGenerator.NextConnectionId(), newNextConnection);
         }
 
         public void ToggleConnection(bool enable)
         {
-            var toMutate = ConnectionGenes.Where(cg => cg.IsDisabled == enable).GetRandomElement();
+            var toMutate = ConnectionGenes.Where(cg => cg.Value.IsDisabled == enable).GetRandomElement();
             toMutate.IsDisabled = enable;
         }
 
         public void AdjustWeight()
         {
-            var toMutate = ConnectionGenes.Where(cg => !cg.IsDisabled).GetRandomElement();
+            var toMutate = ConnectionGenes.Where(cg => !cg.Value.IsDisabled).GetRandomElement();
             toMutate.Weight = RandomGenerator.NewWeight(Config.Step);
         }
 
         public void RandomizeWeight()
         {
-            var toMutate = ConnectionGenes.Where(cg => !cg.IsDisabled).GetRandomElement();
+            var toMutate = ConnectionGenes.Where(cg => !cg.Value.IsDisabled).GetRandomElement();
             toMutate.Weight = RandomGenerator.NewWeight();
         }
     }

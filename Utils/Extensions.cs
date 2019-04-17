@@ -6,16 +6,18 @@ namespace BizhawkNEAT.Utils
 {
     public static class Extensions
     {
-        public static T GetRandomElement<T>(this IEnumerable<T> source)
+        public static T GetRandomElement<T>(this IEnumerable<KeyValuePair<int, T>> source)
         {
-            var random = RandomGenerator.GetRandom();
-            var list = source.ToList();
-            return list[random.Next(list.Count)];
+            var randomIndex = RandomGenerator.GetRandom().Next(source.Count());
+            return source.First(x => x.Key == randomIndex).Value;
         }
 
-        public static ConnectionGene GetConnection(this IList<ConnectionGene> list, NodeGene source, NodeGene target)
+        public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)
         {
-            return list.FirstOrDefault(x => (x.PreviousNode == source && x.NextNode == target) || (x.PreviousNode == target && x.NextNode == source));
+            return sourceDictionary.Where(x =>
+                (x.Value.PreviousNode == source && x.Value.NextNode == target) ||
+                (x.Value.PreviousNode == target && x.Value.NextNode == source))
+                .Select(x => x.Value).FirstOrDefault();
         }
     }
 }
