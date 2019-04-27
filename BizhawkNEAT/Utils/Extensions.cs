@@ -10,7 +10,7 @@ namespace BizhawkNEAT.Utils
         public static T GetRandomElement<T>(this IEnumerable<KeyValuePair<int, T>> source)
         {
             var randomIndex = RandomGenerator.GetRandom().Next(source.Count());
-            return source.First(x => x.Key == randomIndex).Value;
+            return source.ElementAt(randomIndex).Value;
         }
 
         public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)

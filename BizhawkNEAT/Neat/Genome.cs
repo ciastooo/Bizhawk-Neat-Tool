@@ -41,7 +41,10 @@ namespace BizhawkNEAT.Neat
         {
             var firstNode = NodeGenes.GetRandomElement();
             var secondNode = NodeGenes.GetRandomElement();
-            while (firstNode == secondNode || ConnectionGenes.GetConnection(firstNode, secondNode) != null)
+            while (firstNode == secondNode ||
+                   ConnectionGenes.GetConnection(firstNode, secondNode) != null ||
+                   firstNode.Type == NodeGeneType.Input && secondNode.Type == NodeGeneType.Input ||
+                   firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Output)
             {
                 secondNode = NodeGenes.GetRandomElement();
             }
@@ -97,16 +100,24 @@ namespace BizhawkNEAT.Neat
             toMutate.Toggle(enable);
         }
 
-        public void MutateAdjustWeight()
+        public void MutateAdjustWeight(bool randomizeweight = false)
         {
             var toMutate = ConnectionGenes.Where(cg => cg.Value.IsEnabled).GetRandomElement();
-            toMutate.SetWeight(RandomGenerator.NewWeight(Config.Step));
+            if (randomizeweight)
+            {
+                toMutate.SetWeight(RandomGenerator.NewWeight());
+            }
+            else
+            {
+                toMutate.SetWeight(RandomGenerator.NewWeight(Config.WeightStep));
+            }
         }
 
-        public void MutateRandomizeWeight()
+        public void MutateDeleteConnection()
         {
-            var toMutate = ConnectionGenes.Where(cg => cg.Value.IsEnabled).GetRandomElement();
-            toMutate.SetWeight(RandomGenerator.NewWeight());
+            var connectionToDelete = NodeGenes.GetRandomElement();
+
+            NodeGenes.Remove(NodeGenes.First(x => x.Value == connectionToDelete).Key);
         }
     }
 }
