@@ -3,19 +3,21 @@
     public static class Config
     {
         // Species distance coefficients
-        public static double C1 { get; private set;}
-        public static double C2 { get; private set;}
-        public static double C3 { get; private set;}
-        public static int N { get; private set; }
+        public static double DisjointDelta { get; private set; } = 2d;
+        public static double WeightDelta { get; private set; } = 0.4d;
+        public static int SpecieSizeDelta { get; private set; } = 20;
+        public static double SpecieThreshold { get; private set; }
 
         public static double Step { get; private set; }
 
-        public static void Setup(double c1, double c2, double c3, double n, double step)
+        public static int Population { get; private set; } = 500;
+
+        public static void Set(double disjointDelta, double weightDelta, int specieSizeDelta, double specieThreshold, double step)
         {
-            C1 = c1;
-            C2 = c2;
-            C3 = c3;
-            N = n;
+            DisjointDelta = disjointDelta;
+            WeightDelta = weightDelta;
+            SpecieSizeDelta = specieSizeDelta;
+            SpecieThreshold = specieThreshold;
             Step = step;
         }
     }

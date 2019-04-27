@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Neat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,74 +15,56 @@ namespace BizhawkNEAT.Utils
 
         public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)
         {
-            return sourceDictionary.Where(x =>
-                (x.Value.PreviousNode == source && x.Value.NextNode == target) ||
-                (x.Value.PreviousNode == target && x.Value.NextNode == source))
-                .Select(x => x.Value).FirstOrDefault();
+            return sourceDictionary.Values.Where(x =>
+                (x.PreviousNode == source && x.NextNode == target) ||
+                (x.PreviousNode == target && x.NextNode == source))
+                .FirstOrDefault();
         }
 
         public static double GetSpecieDistance(this IDictionary<int, ConnectionGene> sourceDictionary, IDictionary<int, ConnectionGene> targetDictionary)
         {
-            var geneCount = 0;
             var disjointGenes = 0;
-            var excessGenes = 0;
             var weightDifference = 0d;
+            var matchingGenesCount = 0;
 
+            var sourceGeneCount = 0;
+            foreach (var sourceConnectionGene in sourceDictionary)
+            {
+                var sourceId = sourceConnectionGene.Key;
+                sourceGeneCount++;
+                if (!targetDictionary.ContainsKey(sourceId))
+                {
+                    disjointGenes++;
+                } else
+                {
+                    weightDifference += Math.Abs(sourceConnectionGene.Value.Weight - targetDictionary[sourceId].Weight);
+                    matchingGenesCount++;
+                }
+            }
 
-            var targetMaxId = 0;
             var targetGeneCount = 0;
-            foreach (var targetGeneKey in targetDictionary.Keys)
+            foreach (var targetId in targetDictionary.Keys)
             {
                 targetGeneCount++;
-                if (targetGeneKey > targetMaxId)
+                if (!sourceDictionary.ContainsKey(targetId))
                 {
-                    targetMaxId = targetGeneKey;
-                };
-            }
-
-            var sourceMaxId = 0;
-            foreach (var sourceGeneKey in sourceDictionary.Keys)
-            {
-                geneCount++;
-
-                if (sourceGeneKey > sourceMaxId)
-                {
-                    sourceMaxId = sourceGeneKey;
-                };
-
-                if (!targetDictionary.ContainsKey(sourceGeneKey))
-                {
-                    if(sourceGeneKey < targetMaxId)
-                    {
-                        disjointGenes++;
-                    } else
-                    {
-                        excessGenes++;
-                    }
+                    disjointGenes++;
                 }
             }
 
-            foreach (var targetGeneKey in targetDictionary.Keys)
+            var geneCount = sourceGeneCount > targetGeneCount ? sourceGeneCount : targetGeneCount;
+            if(geneCount < Config.SpecieSizeDelta)
             {
-                if (!sourceDictionary.ContainsKey(targetGeneKey))
-                {
-                    if (targetGeneKey < sourceMaxId)
-                    {
-                        disjointGenes++;
-                    }
-                    else
-                    {
-                        excessGenes++;
-                    }
-                }
+                geneCount = 1;
             }
+            var averageWeightDifference = weightDifference / matchingGenesCount;
 
-            if (targetGeneCount > geneCount)
-            {
-                geneCount = targetGeneCount;
-            }
+            return Config.DisjointDelta * disjointGenes / geneCount + Config.WeightDelta * averageWeightDifference;
+        }
 
-            return ((Config.C1 * excessGenes) + (Config.C2 * disjointGenes)) / geneCount + Config.C3 * weightDifference;
+        public static bool IsSameSpecie(this IDictionary<int, ConnectionGene> sourceDictionary, IDictionary<int, ConnectionGene> targetDictionary)
+        {
+            return sourceDictionary.GetSpecieDistance(targetDictionary) < Config.SpecieThreshold;
         }
     }
 }
