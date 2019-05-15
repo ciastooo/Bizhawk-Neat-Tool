@@ -21,9 +21,17 @@ namespace BizhawkNEAT.Neat
             NodeGenes = new Dictionary<int, NodeGene>();
         }
 
-        public Genome(Genome toCopy)
+        public Genome(Genome toCopy): this()
         {
+            foreach(var nodeGene in toCopy.NodeGenes.Values)
+            {
+                AddNodeGene(new NodeGene(nodeGene));
+            }
 
+            foreach (var connectionGene in toCopy.ConnectionGenes)
+            {
+                AddConnectionGene(new ConnectionGene(connectionGene.Value), connectionGene.Key);
+            }
         }
 
         public bool[] Propagate(double[] inputs)
