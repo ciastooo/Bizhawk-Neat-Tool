@@ -15,5 +15,15 @@ namespace BizhawkNEAT.Utils
         {
             return GetRandom().NextDouble() * 2 * limit - limit;
         }
+
+        public static bool GetRandomResult(double probability)
+        {
+            return GetRandom().NextDouble() < probability;
+        }
+
+        public static bool GetCoinToss()
+        {
+            return GetRandom().Next(0, 2) == 1;
+        }
     }
 }

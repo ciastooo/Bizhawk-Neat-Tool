@@ -21,10 +21,15 @@ namespace BizhawkNEAT.Neat
             NodeGenes = new Dictionary<int, NodeGene>();
         }
 
+        public Genome(Genome toCopy)
+        {
+
+        }
+
         public bool[] Propagate(double[] inputs)
         {
             var inputNodes = InputNodes;
-            if(inputs.Length != inputNodes.Count)
+            if (inputs.Length != inputNodes.Count)
             {
                 throw new Exception("Number of inputs does not match number of genome inputs");
             }
@@ -43,13 +48,13 @@ namespace BizhawkNEAT.Neat
 
             var connectionsToPropagate = ConnectionGenes.Values.Where(cg => cg.IsEnabled).ToList();
 
-            while(connectionsToPropagate.Count != 0)
+            while (connectionsToPropagate.Count != 0)
             {
                 var propagatedConnections = new List<ConnectionGene>();
 
-                foreach(var connectionGene in connectionsToPropagate)
+                foreach (var connectionGene in connectionsToPropagate)
                 {
-                    if(!connectionGene.PreviousNode.IsReady)
+                    if (!connectionGene.PreviousNode.IsReady)
                     {
                         continue;
                     }
@@ -57,7 +62,7 @@ namespace BizhawkNEAT.Neat
                     connectionGene.NextNode.Value += connectionGene.PreviousNode.Value * connectionGene.Weight;
                     propagatedConnections.Add(connectionGene);
 
-                    if(!connectionsToPropagate.Any(cg => cg.NextNode == connectionGene.NextNode && cg != connectionGene))
+                    if (!connectionsToPropagate.Any(cg => cg.NextNode == connectionGene.NextNode && cg != connectionGene))
                     {
                         connectionGene.NextNode.Value = ActivationFunctions.Sigmoid.Count(connectionGene.NextNode.Value);
                         connectionGene.NextNode.IsReady = true;
@@ -85,13 +90,56 @@ namespace BizhawkNEAT.Neat
 
         public void AddNodeGene(NodeGene toAdd, int index)
         {
-            NodeGenes.Add(index, toAdd);
+            if (!NodeGenes.ContainsKey(index))
+            {
+                NodeGenes.Add(index, toAdd);
+            }
         }
 
         public void AddNodeGene(NodeGene toAdd)
         {
-            NodeGenes.Add(IdGenerator.NextNodeId(), toAdd);
+            if (!NodeGenes.ContainsKey(toAdd.Id))
+            {
+                NodeGenes.Add(toAdd.Id, toAdd);
+            }
         }
 
+        public void TryMutate()
+        {
+            if (RandomGenerator.GetRandomResult(Config.MutationAddConnectionProbability))
+            {
+                this.MutateAddConnection();
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationAddNodeProbability))
+            {
+                this.MutateAddNode();
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationAdjustWeightProbability))
+            {
+                this.MutateAdjustWeight();
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationDeleteConnectionProbability))
+            {
+                this.MutateDeleteConnection();
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationDisableConnectionProbability))
+            {
+                this.MutateToggleConnection(false);
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationEnableConnectionProbability))
+            {
+                this.MutateToggleConnection(true);
+            }
+
+            if (RandomGenerator.GetRandomResult(Config.MutationPerturbateWeightProbability))
+            {
+                this.MutateAdjustWeight(true);
+            }
+        }
     }
 }

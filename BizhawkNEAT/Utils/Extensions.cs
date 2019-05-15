@@ -7,10 +7,10 @@ namespace BizhawkNEAT.Utils
 {
     public static class Extensions
     {
-        public static T GetRandomElement<T>(this IEnumerable<KeyValuePair<int, T>> source)
+        public static T GetRandomElement<T>(this IEnumerable<T> source)
         {
             var randomIndex = RandomGenerator.GetRandom().Next(source.Count());
-            return source.ElementAt(randomIndex).Value;
+            return source.ElementAtOrDefault(randomIndex);
         }
 
         public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)
@@ -21,39 +21,40 @@ namespace BizhawkNEAT.Utils
                 .FirstOrDefault();
         }
 
-        public static double GetSpecieDistance(this IDictionary<int, ConnectionGene> sourceDictionary, IDictionary<int, ConnectionGene> targetDictionary)
+        public static double GetSpecieDistance(this Genome sourceGenome, Genome targetGenome)
         {
             var disjointGenes = 0;
             var weightDifference = 0d;
             var matchingGenesCount = 0;
 
             var sourceGeneCount = 0;
-            foreach (var sourceConnectionGene in sourceDictionary)
+            foreach (var sourceConnectionGene in sourceGenome.ConnectionGenes)
             {
                 var sourceId = sourceConnectionGene.Key;
                 sourceGeneCount++;
-                if (!targetDictionary.ContainsKey(sourceId))
+                if (!targetGenome.ConnectionGenes.ContainsKey(sourceId))
                 {
                     disjointGenes++;
-                } else
+                }
+                else
                 {
-                    weightDifference += Math.Abs(sourceConnectionGene.Value.Weight - targetDictionary[sourceId].Weight);
+                    weightDifference += Math.Abs(sourceConnectionGene.Value.Weight - targetGenome.ConnectionGenes[sourceId].Weight);
                     matchingGenesCount++;
                 }
             }
 
             var targetGeneCount = 0;
-            foreach (var targetId in targetDictionary.Keys)
+            foreach (var targetId in targetGenome.ConnectionGenes.Keys)
             {
                 targetGeneCount++;
-                if (!sourceDictionary.ContainsKey(targetId))
+                if (!sourceGenome.ConnectionGenes.ContainsKey(targetId))
                 {
                     disjointGenes++;
                 }
             }
 
             var geneCount = sourceGeneCount > targetGeneCount ? sourceGeneCount : targetGeneCount;
-            if(geneCount < Config.SpecieSizeDelta)
+            if (geneCount < Config.SpecieSizeDelta)
             {
                 geneCount = 1;
             }
@@ -62,9 +63,9 @@ namespace BizhawkNEAT.Utils
             return Config.DisjointDelta * disjointGenes / geneCount + Config.WeightDelta * averageWeightDifference;
         }
 
-        public static bool IsSameSpecie(this IDictionary<int, ConnectionGene> sourceDictionary, IDictionary<int, ConnectionGene> targetDictionary)
+        public static bool IsSameSpecie(this Genome sourceGenome, Genome targetGenome)
         {
-            return sourceDictionary.GetSpecieDistance(targetDictionary) < Config.SpecieThreshold;
+            return sourceGenome.GetSpecieDistance(targetGenome) < Config.SpecieThreshold;
         }
     }
 }

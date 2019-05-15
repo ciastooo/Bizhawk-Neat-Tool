@@ -1,4 +1,6 @@
-﻿namespace BizhawkNEAT.Utils
+﻿using System.Collections.Generic;
+
+namespace BizhawkNEAT.Utils
 {
     public static class Config
     {
@@ -16,38 +18,22 @@
         public static double MutationAdjustWeightProbability = 0.9;
         public static double MutationPerturbateWeightProbability = 0.1;
         public static double MutationDeleteConnectionProbability = 0.15;
-        public static double WeightStep { get; private set; }
+        public static double WeightStep { get; private set; } = 0.1;
 
         public static int Population { get; private set; } = 100;
 
-        public static void Set(
-            double disjointDelta,
-            double weightDelta,
-            int specieSizeDelta,
-            double specieThreshold,
-            double mutationAddConnectionProbability,
-            double mutationAddNodeProbability,
-            double mutationEnableConnectionProbability,
-            double mutationDisableConnectionProbability,
-            double mutationAdjustWeightProbability,
-            double mutationPerturbateWeightProbability,
-            double mutationDeleteConnectionProbability,
-            double step,
-            int population)
+        public static double CrossoverChance { get; private set; } = 0.75;
+
+        private static IList<string> SpecieNames = new List<string>
         {
-            DisjointDelta = disjointDelta;
-            WeightDelta = weightDelta;
-            SpecieSizeDelta = specieSizeDelta;
-            SpecieThreshold = specieThreshold;
-            MutationAddConnectionProbability = mutationAddConnectionProbability;
-            MutationAddNodeProbability = mutationAddNodeProbability;
-            MutationEnableConnectionProbability = mutationEnableConnectionProbability;
-            MutationDisableConnectionProbability = mutationDisableConnectionProbability;
-            MutationAdjustWeightProbability = mutationAdjustWeightProbability;
-            MutationPerturbateWeightProbability = mutationPerturbateWeightProbability;
-            MutationDeleteConnectionProbability = mutationDeleteConnectionProbability;
-            Step = step;
-            Population = population;
+            "Ironman", "Captain America", "Black Widow", "Hulk", "Dr. Strange", "Thor", "Thanos", "Antman", "Black Panther", "Spiderman", "Wolverine", "Falcon", "Drax", "Rocket", "Hawkeye", "War machine", "Star-lord", "The Winter Soldier", "Wasp", "Groot", "Vision", "Loki", "Stan Lee"
+        };
+
+        public static string GetNewSpecieName()
+        {
+            var randomName = SpecieNames.GetRandomElement();
+            SpecieNames.Remove(randomName);
+            return randomName;
         }
     }
 }
