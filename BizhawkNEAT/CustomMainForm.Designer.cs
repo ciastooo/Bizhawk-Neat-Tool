@@ -84,7 +84,7 @@
             this.Controls.Add(this.Lewo);
             this.Controls.Add(this.Sel);
             this.Name = "CustomMainForm";
-            this.Text = "CustomMainForm";
+            this.Text = "NEAT";
             this.ResumeLayout(false);
 
 		}

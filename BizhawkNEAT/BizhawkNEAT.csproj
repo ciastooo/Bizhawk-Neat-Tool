@@ -49,6 +49,7 @@
     <Compile Include="CustomMainForm.Designer.cs">
       <DependentUpon>CustomMainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameInformationHandler.cs" />
     <Compile Include="Neat\Network.cs" />
     <Compile Include="Neat\Specie.cs" />
     <Compile Include="Utils\ActivationFunctions.cs" />

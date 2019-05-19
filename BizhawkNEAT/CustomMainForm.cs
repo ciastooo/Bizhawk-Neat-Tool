@@ -1,7 +1,7 @@
 ﻿using BizHawk.Client.ApiHawk;
 using System.Windows.Forms;
 
-[assembly:BizHawkExternalTool("NEAT", "test")]
+[assembly:BizHawkExternalTool("NEAT", "Bizhawk tool for neat")]
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class CustomMainForm : Form, IExternalToolForm
@@ -62,6 +62,15 @@ namespace BizHawk.Client.EmuHawk
         private void Góra_Click(object sender, System.EventArgs e)
         {
             Joypad.Set("Start", true, 1);
+        }
+
+        private (int, int) GetPlayerPosition()
+        {
+        }
+
+        private int GetTile(int x, int y)
+        {
+
         }
     }
 }

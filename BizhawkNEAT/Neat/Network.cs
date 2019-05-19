@@ -37,6 +37,11 @@ namespace BizhawkNEAT.Neat
             }
         }
 
+        public void Train()
+        {
+
+        }
+
         private void NextGeneration()
         {
             var newGeneration = new List<Specie>();
