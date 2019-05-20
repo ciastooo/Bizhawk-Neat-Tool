@@ -81,12 +81,5 @@ namespace BizhawkNEAT.Utils
                 toMutate.SetWeight(toMutate.Weight + RandomGenerator.NewWeight(Config.WeightStep));
             }
         }
-
-        public static void MutateDeleteConnection(this Genome genome)
-        {
-            var connectionToDelete = genome.NodeGenes.Values.GetRandomElement();
-
-            genome.NodeGenes.Remove(genome.NodeGenes.First(x => x.Value == connectionToDelete).Key);
-        }
     }
 }

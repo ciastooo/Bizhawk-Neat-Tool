@@ -36,25 +36,27 @@ namespace BizhawkNEAT.Neat
         {
             var initSpecie = new Specie();
 
+            var progenitorGenome = new Genome();
+            for (int j = 0; j < inputNodesCount; j++)
+            {
+                var inputNode = new NodeGene(NodeGeneType.Input);
+                progenitorGenome.AddNodeGene(inputNode, inputNode.Id);
+            }
+            for (int j = 0; j < outputNodesCount; j++)
+            {
+                var outputNode = new NodeGene(NodeGeneType.Output);
+                progenitorGenome.AddNodeGene(outputNode, outputNode.Id);
+            }
+
             for (int i = 0; i < Config.Population; i++)
             {
-                var newGenome = new Genome();
-                for (int j = 0; j < inputNodesCount; j++)
-                {
-                    var inputNode = new NodeGene(NodeGeneType.Input);
-                    newGenome.AddNodeGene(inputNode, inputNode.Id);
-                }
-                for (int j = 0; j < outputNodesCount; j++)
-                {
-                    var outputNode = new NodeGene(NodeGeneType.Output);
-                    newGenome.AddNodeGene(outputNode, outputNode.Id);
-                }
-
+                var newGenome = new Genome(progenitorGenome);
                 initSpecie.Genomes.Add(newGenome);
             }
 
             Species.Add(initSpecie);
-            CurrentSpecie = initSpecie;
+            NextGeneration();
+            CurrentSpecie = Species.First();
             CurrentPlayer = CurrentSpecie.Genomes.First();
         }
 
@@ -120,11 +122,10 @@ namespace BizhawkNEAT.Neat
 
             foreach (var specie in Species)
             {
-                var childGenomes = specie.GetMostFitGenomes();
-                if (childGenomes.Count > 0)
+                var childSpecie = new Specie(specie.Name);
+                childSpecie.Genomes = specie.GetMostFitGenomes();
+                if (childSpecie.Genomes.Count > 0)
                 {
-                    var childSpecie = new Specie(specie.Name);
-                    childSpecie.Genomes = childGenomes;
                     newGeneration.Add(childSpecie);
                     newGenerationCount += childSpecie.Genomes.Count;
                     totalAverageFitness += specie.AverageFitness;

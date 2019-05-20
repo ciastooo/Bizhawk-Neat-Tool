@@ -129,11 +129,6 @@ namespace BizhawkNEAT.Neat
                 this.MutateAdjustWeight();
             }
 
-            if (RandomGenerator.GetRandomResult(Config.MutationDeleteConnectionProbability))
-            {
-                this.MutateDeleteConnection();
-            }
-
             if (RandomGenerator.GetRandomResult(Config.MutationDisableConnectionProbability))
             {
                 this.MutateToggleConnection(false);

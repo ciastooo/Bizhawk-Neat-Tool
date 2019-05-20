@@ -6,7 +6,6 @@ namespace BizhawkNEAT.Neat
 {
     public class Specie
     {
-        public int TopFitness { get; set; }
         public string Name { get; set; }
         public double AverageFitness
         {

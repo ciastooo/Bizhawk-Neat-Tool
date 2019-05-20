@@ -58,7 +58,12 @@ namespace BizhawkNEAT.Utils
             {
                 geneCount = 1;
             }
+
             var averageWeightDifference = weightDifference / matchingGenesCount;
+            if(matchingGenesCount == 0)
+            {
+                averageWeightDifference = 0;
+            }
 
             return Config.DisjointDelta * disjointGenes / geneCount + Config.WeightDelta * averageWeightDifference;
         }
