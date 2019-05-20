@@ -7,13 +7,8 @@ namespace BizhawkNEAT
 {
     public class GameInformationHandler
     {
-        [RequiredApi]
         private JoypadApi Joypad { get; set; }
-
-        [RequiredApi]
         private IMem Memory { get; set; }
-
-        [RequiredApi]
         private MemorySaveStateApi SaveState { get; set; }
 
         private string SaveStateId { get; set; }
@@ -114,7 +109,7 @@ namespace BizhawkNEAT
         {
             var enemiesPositions = GetEnemiesPositions();
 
-            var inputs = new int[13 * 13];
+            var inputs = new int[13 * 13 + 1];
             var index = 0;
 
             var marioX = MarioX;
@@ -147,6 +142,9 @@ namespace BizhawkNEAT
                     index++;
                 }
             }
+
+            // Bias
+            inputs[index] = 1;
 
             return inputs;
         }

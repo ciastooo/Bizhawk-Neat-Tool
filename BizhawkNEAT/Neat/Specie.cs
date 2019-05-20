@@ -40,7 +40,7 @@ namespace BizhawkNEAT.Neat
         {
             Genome childGenome;
 
-            if (RandomGenerator.GetRandomResult(Config.CrossoverChance))
+            if (RandomGenerator.GetRandomResult(Config.CrossoverChance) && Genomes.Count > 1)
             {
                 childGenome = Crossover();
             }

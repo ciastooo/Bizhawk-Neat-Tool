@@ -53,6 +53,7 @@ namespace BizhawkNEAT.Neat
                 initSpecie.Genomes.Add(newGenome);
             }
 
+            Species.Add(initSpecie);
             CurrentSpecie = initSpecie;
             CurrentPlayer = CurrentSpecie.Genomes.First();
         }
@@ -82,13 +83,8 @@ namespace BizhawkNEAT.Neat
                     fitness += 1000;
                 }
 
-                if (fitness == 0)
-                {
-                    fitness = -1;
-                }
-
                 CurrentPlayer.Fitness = fitness;
-                Console.WriteLine($"Generation: {Generation}; Specie: {CurrentSpecie.Name}; Fitness: {fitness}");
+                Console.WriteLine($"Generation: {Generation}; Specie: {CurrentSpecie.Name} ({Species.IndexOf(CurrentSpecie) + 1}/{Species.Count}); Genome: {CurrentSpecie.Genomes.IndexOf(CurrentPlayer) + 1}/{CurrentSpecie.Genomes.Count}; Fitness: {fitness};");
                 InitializeNextRun();
             }
 
@@ -124,10 +120,11 @@ namespace BizhawkNEAT.Neat
 
             foreach (var specie in Species)
             {
-                var childSpecie = new Specie(specie.Name);
-                childSpecie.Genomes = specie.GetMostFitGenomes();
-                if (childSpecie.Genomes.Count > 0)
+                var childGenomes = specie.GetMostFitGenomes();
+                if (childGenomes.Count > 0)
                 {
+                    var childSpecie = new Specie(specie.Name);
+                    childSpecie.Genomes = childGenomes;
                     newGeneration.Add(childSpecie);
                     newGenerationCount += childSpecie.Genomes.Count;
                     totalAverageFitness += specie.AverageFitness;
@@ -172,6 +169,7 @@ namespace BizhawkNEAT.Neat
 
             var newSpecie = new Specie();
             newSpecie.Genomes.Add(genomeToAdd);
+            species.Add(newSpecie);
         }
 
         private void NextPlayer()

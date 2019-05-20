@@ -1,6 +1,7 @@
 ﻿using BizHawk.Client.ApiHawk;
 using BizhawkNEAT;
 using BizhawkNEAT.Neat;
+using BizhawkNEAT.Utils;
 using System.Windows.Forms;
 
 [assembly: BizHawkExternalTool("NEAT", "Bizhawk tool for neat")]
@@ -26,6 +27,15 @@ namespace BizHawk.Client.EmuHawk
             }
         }
 
+        [RequiredApi]
+        private MemorySaveStateApi SaveState
+        {
+            set
+            {
+                gameInformationHandler.SetSaveStateApi(value);
+            }
+        }
+
         private GameInformationHandler gameInformationHandler { get; set; }
 
         private Network network { get; set; }
@@ -34,8 +44,6 @@ namespace BizHawk.Client.EmuHawk
         {
             InitializeComponent();
             gameInformationHandler = new GameInformationHandler();
-            network = new Network(gameInformationHandler);
-            network.Init(13 * 13 + 1, 6);
         }
 
         public bool UpdateBefore => true;
@@ -52,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
         public void NewUpdate(ToolFormUpdateType type)
         {
-            if(type == ToolFormUpdateType.PostFrame)
+            if (network != null && type == ToolFormUpdateType.PostFrame)
             {
                 network.Train();
             }
@@ -66,6 +74,13 @@ namespace BizHawk.Client.EmuHawk
         public void UpdateValues()
         {
 
+        }
+
+        private void Start_Click(object sender, System.EventArgs e)
+        {
+            gameInformationHandler.SaveGameState();
+            network = new Network(gameInformationHandler);
+            network.Init(13 * 13 + 1, Config.ButtonNames.Length);
         }
     }
 }
