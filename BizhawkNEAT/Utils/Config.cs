@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizhawkNEAT.Utils
 {
@@ -24,6 +25,8 @@ namespace BizhawkNEAT.Utils
 
         public static double CrossoverChance { get; private set; } = 0.75;
 
+        public static int Timeout { get; private set; } = 20;
+
         private static IList<string> SpecieNames = new List<string>
         {
             "Ironman", "Captain America", "Black Widow", "Hulk", "Dr. Strange", "Thor", "Thanos", "Antman", "Black Panther", "Spiderman", "Wolverine", "Falcon", "Drax", "Rocket", "Hawkeye", "War machine", "Star-lord", "The Winter Soldier", "Wasp", "Groot", "Vision", "Loki", "Stan Lee"
@@ -31,9 +34,15 @@ namespace BizhawkNEAT.Utils
 
         public static string GetNewSpecieName()
         {
+            if (SpecieNames.Count == 0)
+            {
+                return Guid.NewGuid().ToString();
+            }
             var randomName = SpecieNames.GetRandomElement();
             SpecieNames.Remove(randomName);
             return randomName;
         }
+
+        public static string[] ButtonNames = new string[] { "A", "B", "Up", "Down", "left", "Right" };
     }
 }

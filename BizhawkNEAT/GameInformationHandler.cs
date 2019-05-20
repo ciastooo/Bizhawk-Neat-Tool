@@ -1,4 +1,5 @@
 ﻿using BizHawk.Client.ApiHawk;
+using BizhawkNEAT.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,11 @@ namespace BizhawkNEAT
 
         [RequiredApi]
         private IMem Memory { get; set; }
+
+        [RequiredApi]
+        private MemorySaveStateApi SaveState { get; set; }
+
+        private string SaveStateId { get; set; }
 
         public GameInformationHandler()
         {
@@ -26,35 +32,40 @@ namespace BizhawkNEAT
             Memory = memoryApi;
         }
 
-        private uint MarioX
+        public void SetSaveStateApi(MemorySaveStateApi memorySaveStateApi)
+        {
+            SaveState = memorySaveStateApi;
+        }
+        
+        public int MarioX
         {
             get
             {
-                return Memory.ReadByte(0x6D) * 0x100 + Memory.ReadByte(0x86);
+                return (int)(Memory.ReadByte(0x6D) * 0x100 + Memory.ReadByte(0x86));
             }
         }
 
-        private uint MarioY
+        public int MarioY
         {
             get
             {
-                return Memory.ReadByte(0x03B8) + 16;
+                return (int)Memory.ReadByte(0x03B8) + 16;
             }
         }
 
-        private uint ScreenXOffset
+        private int ScreenXOffset
         {
             get
             {
-                return Memory.ReadByte(0x03AD);
+                return (int)Memory.ReadByte(0x03AD);
             }
         }
 
-        private uint ScreenYOffset
+        private int ScreenYOffset
         {
             get
             {
-                return Memory.ReadByte(0x03B8);
+                return (int)Memory.ReadByte(0x03B8);
             }
         }
 
@@ -138,6 +149,56 @@ namespace BizhawkNEAT
             }
 
             return inputs;
+        }
+
+        private void PressButton(string button, bool value)
+        {
+            Joypad.Set(button, value, 1);
+        }
+
+        public void HandleOutput(bool[] output)
+        {
+            if(output.Length != Config.ButtonNames.Length)
+            {
+                throw new Exception("Too many inputs to the joypad");
+            }
+
+            // If LEFT and RIGHT are pressed
+            if(output[4] && output[5])
+            {
+                output[4] = false;
+                output[5] = false;
+            }
+
+            // If UP and DOWN are pressed
+            if (output[2] && output[3])
+            {
+                output[2] = false;
+                output[3] = false;
+            }
+
+            for (int i = 0; i < Config.ButtonNames.Length; i++)
+            {
+                PressButton(Config.ButtonNames[i], output[i]);
+            }
+        }
+
+        public void ClearJoyPad()
+        {
+            for (int i = 0; i < Config.ButtonNames.Length; i++)
+            {
+                PressButton(Config.ButtonNames[i], false);
+            }
+        }
+
+        public void LoadSaveState()
+        {
+            SaveState.LoadCoreStateFromMemory(SaveStateId);
+        }
+
+        public void SaveGameState()
+        {
+            SaveStateId = SaveState.SaveCoreStateToMemory();
         }
     }
 }

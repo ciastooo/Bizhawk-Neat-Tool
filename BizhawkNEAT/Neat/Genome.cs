@@ -34,7 +34,7 @@ namespace BizhawkNEAT.Neat
             }
         }
 
-        public bool[] Propagate(double[] inputs)
+        public bool[] Propagate(int[] inputs)
         {
             var inputNodes = InputNodes;
             if (inputs.Length != inputNodes.Count)

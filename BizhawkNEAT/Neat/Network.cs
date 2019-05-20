@@ -1,18 +1,35 @@
 ﻿using BizhawkNEAT.Utils;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizhawkNEAT.Neat
 {
     public class Network
     {
+        private readonly GameInformationHandler _gameInformationHandler;
+
         public IList<Specie> Species { get; set; }
 
         public int Generation { get; set; }
 
-        public Network()
+        private int CurrentFrame { get; set; }
+
+        private int Timeout { get; set; }
+
+        private int RightmostPosition { get; set; }
+
+        private Specie CurrentSpecie { get; set; }
+        private Genome CurrentPlayer { get; set; }
+
+        public Network(GameInformationHandler gameInformationHandler)
         {
+            _gameInformationHandler = gameInformationHandler;
             Generation = 0;
             Species = new List<Specie>();
+            CurrentFrame = 0;
+            Timeout = Config.Timeout;
+            RightmostPosition = 0;
         }
 
         public void Init(int inputNodesCount, int outputNodesCount)
@@ -35,11 +52,68 @@ namespace BizhawkNEAT.Neat
 
                 initSpecie.Genomes.Add(newGenome);
             }
+
+            CurrentSpecie = initSpecie;
+            CurrentPlayer = CurrentSpecie.Genomes.First();
         }
 
         public void Train()
         {
+            if (CurrentFrame % 5 == 0)
+            {
+                EvaluateCurrentPlayer();
+            }
 
+            var marioX = _gameInformationHandler.MarioX;
+            if (marioX > RightmostPosition)
+            {
+                RightmostPosition = marioX;
+                Timeout = Config.Timeout;
+            }
+
+            Timeout -= 1;
+            var timeoutBonus = CurrentFrame / 4;
+
+            if (Timeout + timeoutBonus <= 0)
+            {
+                var fitness = RightmostPosition - CurrentFrame / 2;
+                if (RightmostPosition > 3186)
+                {
+                    fitness += 1000;
+                }
+
+                if (fitness == 0)
+                {
+                    fitness = -1;
+                }
+
+                CurrentPlayer.Fitness = fitness;
+                Console.WriteLine($"Generation: {Generation}; Specie: {CurrentSpecie.Name}; Fitness: {fitness}");
+                InitializeNextRun();
+            }
+
+            CurrentFrame++;
+        }
+
+        private void InitializeNextRun()
+        {
+            _gameInformationHandler.ClearJoyPad();
+            _gameInformationHandler.LoadSaveState();
+            RightmostPosition = 0;
+            CurrentFrame = 0;
+            Timeout = Config.Timeout;
+
+            NextPlayer();
+            EvaluateCurrentPlayer();
+        }
+
+        private void EvaluateCurrentPlayer()
+        {
+            var input = _gameInformationHandler.GetNeuralNetInputs();
+
+            var output = CurrentPlayer.Propagate(input);
+
+            _gameInformationHandler.HandleOutput(output);
         }
 
         private void NextGeneration()
@@ -98,6 +172,28 @@ namespace BizhawkNEAT.Neat
 
             var newSpecie = new Specie();
             newSpecie.Genomes.Add(genomeToAdd);
+        }
+
+        private void NextPlayer()
+        {
+            var nextPlayerIndex = CurrentSpecie.Genomes.IndexOf(CurrentPlayer) + 1;
+            if (nextPlayerIndex != CurrentSpecie.Genomes.Count)
+            {
+                CurrentPlayer = CurrentSpecie.Genomes[nextPlayerIndex];
+                return;
+            }
+
+            var nextSpecieIndex = Species.IndexOf(CurrentSpecie) + 1;
+            if (nextSpecieIndex != Species.Count)
+            {
+                CurrentSpecie = Species[nextSpecieIndex];
+                CurrentPlayer = CurrentSpecie.Genomes.First();
+                return;
+            }
+
+            NextGeneration();
+            CurrentSpecie = Species.First();
+            CurrentPlayer = CurrentSpecie.Genomes.First();
         }
     }
 }
