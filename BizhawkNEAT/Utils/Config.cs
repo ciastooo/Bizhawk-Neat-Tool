@@ -6,10 +6,9 @@ namespace BizhawkNEAT.Utils
     public static class Config
     {
         // Species distance coefficients
-        public static double DisjointDelta { get; private set; } = 2;
-        public static double WeightDelta { get; private set; } = 0.4;
-        public static int SpecieSizeDelta { get; private set; } = 20;
-        public static double SpecieThreshold { get; private set; } = 1;
+        public static double DisjointCoefficient { get; private set; } = 1;
+        public static double WeightCoefficient { get; private set; } = 0.4;
+        public static double SpecieThreshold { get; private set; } = 3;
 
         // Mutations
         public static double MutationAddConnectionProbability = 0.5;

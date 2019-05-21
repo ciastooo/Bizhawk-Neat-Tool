@@ -77,6 +77,12 @@ namespace BizhawkNEAT.Neat
                     }
                 }
 
+                // No changes in propagation; Input values cannot be passed further
+                if(propagatedConnections.Count == 0)
+                {
+                    break;
+                }
+
                 foreach (var propagatedConnectionGene in propagatedConnections)
                 {
                     connectionsToPropagate.Remove(propagatedConnectionGene);

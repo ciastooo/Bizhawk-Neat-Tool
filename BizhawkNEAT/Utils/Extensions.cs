@@ -23,49 +23,63 @@ namespace BizhawkNEAT.Utils
 
         public static double GetSpecieDistance(this Genome sourceGenome, Genome targetGenome)
         {
-            var disjointGenes = 0;
-            var weightDifference = 0d;
-            var matchingGenesCount = 0;
-
-            var sourceGeneCount = 0;
-            foreach (var sourceConnectionGene in sourceGenome.ConnectionGenes)
+            var disjointNodes = 0;
+            foreach (var sourceNodeGeneKey in sourceGenome.NodeGenes.Keys)
             {
-                var sourceId = sourceConnectionGene.Key;
-                sourceGeneCount++;
-                if (!targetGenome.ConnectionGenes.ContainsKey(sourceId))
+                if (!targetGenome.NodeGenes.ContainsKey(sourceNodeGeneKey))
                 {
-                    disjointGenes++;
-                }
-                else
-                {
-                    weightDifference += Math.Abs(sourceConnectionGene.Value.Weight - targetGenome.ConnectionGenes[sourceId].Weight);
-                    matchingGenesCount++;
+                    disjointNodes += 1;
                 }
             }
 
-            var targetGeneCount = 0;
-            foreach (var targetId in targetGenome.ConnectionGenes.Keys)
+            foreach (var targetNodeGeneKey in targetGenome.NodeGenes.Keys)
             {
-                targetGeneCount++;
-                if (!sourceGenome.ConnectionGenes.ContainsKey(targetId))
+                if (sourceGenome.NodeGenes.ContainsKey(targetNodeGeneKey))
                 {
-                    disjointGenes++;
+                    disjointNodes += 1;
                 }
             }
+            var nodesDistance = Config.DisjointCoefficient * disjointNodes / Math.Max(sourceGenome.NodeGenes.Count, targetGenome.NodeGenes.Count);
 
-            var geneCount = sourceGeneCount > targetGeneCount ? sourceGeneCount : targetGeneCount;
-            if (geneCount < Config.SpecieSizeDelta)
+            var connectionsDistance = 0d;
+            if (sourceGenome.ConnectionGenes.Count > 0 || targetGenome.ConnectionGenes.Count > 0)
             {
-                geneCount = 1;
+                var weightDifference = 0d;
+                var disjointConnections = 0;
+                var matchingGenesCount = 0;
+                foreach (var sourceConnectionGene in sourceGenome.ConnectionGenes)
+                {
+                    var sourceId = sourceConnectionGene.Key;
+                    if (!targetGenome.ConnectionGenes.ContainsKey(sourceId))
+                    {
+                        disjointConnections += 1;
+                    }
+                    else
+                    {
+                        weightDifference += Math.Abs(sourceConnectionGene.Value.Weight - targetGenome.ConnectionGenes[sourceId].Weight);
+                        matchingGenesCount += 1;
+                    }
+                }
+
+                foreach (var targetId in targetGenome.ConnectionGenes.Keys)
+                {
+                    if (!sourceGenome.ConnectionGenes.ContainsKey(targetId))
+                    {
+                        disjointConnections++;
+                    }
+                }
+                // Prevent dividing by 0
+                if(matchingGenesCount < 1)
+                {
+                    matchingGenesCount = 1;
+                }
+                var averageWeightDifference = weightDifference / matchingGenesCount;
+
+                connectionsDistance = Config.DisjointCoefficient * disjointConnections / Math.Max(sourceGenome.ConnectionGenes.Count, targetGenome.ConnectionGenes.Count);
+                connectionsDistance += averageWeightDifference * Config.WeightCoefficient;
             }
 
-            var averageWeightDifference = weightDifference / matchingGenesCount;
-            if(matchingGenesCount == 0)
-            {
-                averageWeightDifference = 0;
-            }
-
-            return Config.DisjointDelta * disjointGenes / geneCount + Config.WeightDelta * averageWeightDifference;
+            return nodesDistance + connectionsDistance;
         }
 
         public static bool IsSameSpecie(this Genome sourceGenome, Genome targetGenome)
