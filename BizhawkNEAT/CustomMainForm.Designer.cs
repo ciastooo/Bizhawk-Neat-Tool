@@ -30,6 +30,7 @@
 		{
             this.start = new System.Windows.Forms.Button();
             this.networkGraph = new System.Windows.Forms.PictureBox();
+            this.showGenome = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.networkGraph)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,21 +48,34 @@
             // 
             this.networkGraph.Location = new System.Drawing.Point(13, 42);
             this.networkGraph.Name = "networkGraph";
-            this.networkGraph.Size = new System.Drawing.Size(606, 291);
+            this.networkGraph.Size = new System.Drawing.Size(600, 200);
             this.networkGraph.TabIndex = 1;
             this.networkGraph.TabStop = false;
+            // 
+            // showGenome
+            // 
+            this.showGenome.AutoSize = true;
+            this.showGenome.Location = new System.Drawing.Point(94, 17);
+            this.showGenome.Name = "showGenome";
+            this.showGenome.Size = new System.Drawing.Size(131, 17);
+            this.showGenome.TabIndex = 2;
+            this.showGenome.Text = "Show Current genome";
+            this.showGenome.UseVisualStyleBackColor = true;
+            this.showGenome.CheckedChanged += new System.EventHandler(this.ShowGenome_CheckedChanged);
             // 
             // CustomMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(631, 345);
+            this.ClientSize = new System.Drawing.Size(631, 258);
+            this.Controls.Add(this.showGenome);
             this.Controls.Add(this.networkGraph);
             this.Controls.Add(this.start);
             this.Name = "CustomMainForm";
             this.Text = "NEAT";
             ((System.ComponentModel.ISupportInitialize)(this.networkGraph)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 
@@ -69,5 +83,6 @@
 
         private System.Windows.Forms.Button start;
         private System.Windows.Forms.PictureBox networkGraph;
+        private System.Windows.Forms.CheckBox showGenome;
     }
 }

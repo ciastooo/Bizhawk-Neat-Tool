@@ -81,8 +81,13 @@ namespace BizHawk.Client.EmuHawk
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             gameInformationHandler.SaveGameState();
-            network = new Network(gameInformationHandler, networkGraph);
+            network = new Network(gameInformationHandler, networkGraph.CreateGraphics());
             network.Init(13 * 13 + 1, Config.ButtonNames.Length);
+        }
+
+        private void ShowGenome_CheckedChanged(object sender, System.EventArgs e)
+        {
+            Config.DrawGenome = showGenome.Checked;
         }
     }
 }

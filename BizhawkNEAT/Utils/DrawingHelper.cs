@@ -7,7 +7,7 @@ namespace BizhawkNEAT.Utils
 {
     public static class DrawingHelper
     {
-        private static IList<NodeDrawElement> _cachedNodes { get; set; }
+        private static IDictionary<int, NodeDrawElement> _cachedNodes { get; set; }
 
         public static void ClearCache()
         {
@@ -15,7 +15,7 @@ namespace BizhawkNEAT.Utils
         }
 
         private static readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-		private static readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+        private static readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
         private static SolidBrush GetBrush(Color color)
         {
             SolidBrush b;
@@ -45,11 +45,11 @@ namespace BizhawkNEAT.Utils
 
             var nodesToDraw = GetNodesToDraw(genome);
 
-            foreach(var node in nodesToDraw)
+            foreach (var node in nodesToDraw)
             {
-                var nodeValue = genome.NodeGenes[node.Id].Value;
+                var nodeValue = genome.NodeGenes[node.Key].Value;
                 Color color;
-                switch(nodeValue)
+                switch (nodeValue)
                 {
                     case -1:
                         color = Color.Black;
@@ -66,14 +66,12 @@ namespace BizhawkNEAT.Utils
                 }
 
                 var opacity = 255;
-                if(nodeValue == 0)
+                if (nodeValue == 0)
                 {
                     opacity = 80;
                 }
 
-                graphics.FillRectangle(GetBrush(Color.FromArgb(opacity, color)), node.X, node.Y, 10, 10);
-                //graphics.DrawRectangle(GetPen(Color.Black), node.X, node.Y, 10, 10);
-                //graphics.DrawRectangle(new Pen(Color.FromArgb(opacity, Color.FromArgb(color))), node.X, node.Y, 10, 10);
+                graphics.FillRectangle(GetBrush(Color.FromArgb(opacity, color)), node.Value.X, node.Value.Y, 10, 10);
             }
 
             foreach (var connection in genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled))
@@ -89,21 +87,20 @@ namespace BizhawkNEAT.Utils
 
                 var color = connection.Weight > 0 ? Color.Green : Color.Red;
 
-                //graphics.DrawLine(GetPen(color), previousNodeToDraw.X + 1, previousNodeToDraw.Y, nextNodeToDraw.X - 3, nextNodeToDraw.Y);
                 graphics.DrawLine(new Pen(Color.FromArgb(opacity, color)), previousNodeToDraw.X + 1, previousNodeToDraw.Y, nextNodeToDraw.X - 3, nextNodeToDraw.Y);
             }
 
             return graphics;
         }
 
-        private static IList<NodeDrawElement> GetNodesToDraw(Genome genome)
+        private static IDictionary<int, NodeDrawElement> GetNodesToDraw(Genome genome)
         {
-            if(_cachedNodes != null)
+            if (_cachedNodes != null)
             {
                 return _cachedNodes;
             }
 
-            var nodesToDraw = new List<NodeDrawElement>(genome.NodeGenes.Count);
+            var nodesToDraw = new Dictionary<int, NodeDrawElement>(genome.NodeGenes.Count);
 
             var inputNodes = genome.InputNodes;
             var inputIndex = 0;
@@ -114,10 +111,9 @@ namespace BizhawkNEAT.Utils
                     var nodeToDraw = new NodeDrawElement
                     {
                         X = 70 + 10 * x,
-                        Y = 70 + 10 * y,
-                        Id = inputNodes[inputIndex].Id
+                        Y = 70 + 10 * y
                     };
-                    nodesToDraw.Insert(inputNodes[inputIndex].Id, nodeToDraw);
+                    nodesToDraw.Add(inputNodes[inputIndex].Id, nodeToDraw);
                     inputIndex++;
                 };
             }
@@ -125,10 +121,9 @@ namespace BizhawkNEAT.Utils
             var biasNodeToDraw = new NodeDrawElement
             {
                 X = 130,
-                Y = 150,
-                Id = inputNodes.Last().Id
+                Y = 150
             };
-            nodesToDraw.Insert(inputNodes.Last().Id, biasNodeToDraw);
+            nodesToDraw.Add(inputNodes.Last().Id, biasNodeToDraw);
 
             for (int i = 0; i < genome.OutputNodes.Count; i++)
             {
@@ -136,10 +131,9 @@ namespace BizhawkNEAT.Utils
                 var nodeToDraw = new NodeDrawElement
                 {
                     X = 500,
-                    Y = 30 + 13 * i,
-                    Id = outputNode.Id
+                    Y = 30 + 13 * i
                 };
-                nodesToDraw.Insert(outputNode.Id, nodeToDraw);
+                nodesToDraw.Add(outputNode.Id, nodeToDraw);
             }
 
             foreach (var hiddenNode in genome.HiddenNodes)
@@ -147,15 +141,15 @@ namespace BizhawkNEAT.Utils
                 var nodeToDraw = new NodeDrawElement
                 {
                     X = 250,
-                    Y = 80,
-                    Id = hiddenNode.Id
+                    Y = 80
                 };
-                nodesToDraw.Insert(hiddenNode.Id, nodeToDraw);
+                nodesToDraw.Add(hiddenNode.Id, nodeToDraw);
             }
 
-            for (int i = 0; i < 10; i++)
+            var connectionGenesToDraw = genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled);
+            for (int i = 0; i < 4; i++)
             {
-                foreach (var connectionGene in genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled))
+                foreach (var connectionGene in connectionGenesToDraw)
                 {
                     var previousNode = connectionGene.PreviousNode;
                     var nextNode = connectionGene.NextNode;
@@ -203,7 +197,6 @@ namespace BizhawkNEAT.Utils
         {
             public float X { get; set; }
             public float Y { get; set; }
-            public int Id { get; set; }
         }
     }
 

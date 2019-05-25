@@ -1,6 +1,7 @@
 ﻿using BizhawkNEAT.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,7 +10,7 @@ namespace BizhawkNEAT.Neat
     public class Network
     {
         private readonly GameInformationHandler _gameInformationHandler;
-        private readonly PictureBox _pictureBox;
+        private readonly Graphics _networkGraphGraphics;
 
         public IList<Specie> Species { get; set; }
 
@@ -24,10 +25,10 @@ namespace BizhawkNEAT.Neat
         private Specie CurrentSpecie { get; set; }
         private Genome CurrentPlayer { get; set; }
 
-        public Network(GameInformationHandler gameInformationHandler, PictureBox pictureBox)
+        public Network(GameInformationHandler gameInformationHandler, Graphics networkGraphGraphics)
         {
             _gameInformationHandler = gameInformationHandler;
-            _pictureBox = pictureBox;
+            _networkGraphGraphics = networkGraphGraphics;
             Generation = 0;
             Species = new List<Specie>();
             CurrentFrame = 0;
@@ -68,7 +69,7 @@ namespace BizhawkNEAT.Neat
             if (CurrentFrame % 5 == 0)
             {
                 EvaluateCurrentPlayer();
-                //if (CurrentFrame % 20 == 0)
+                if (Config.DrawGenome && CurrentFrame % 20 == 0)
                     DrawGenome();
             }
 
@@ -180,6 +181,7 @@ namespace BizhawkNEAT.Neat
 
         private void NextPlayer()
         {
+            DrawingHelper.ClearCache();
             var nextPlayerIndex = CurrentSpecie.Genomes.IndexOf(CurrentPlayer) + 1;
             if (nextPlayerIndex != CurrentSpecie.Genomes.Count)
             {
@@ -196,15 +198,13 @@ namespace BizhawkNEAT.Neat
             }
 
             NextGeneration();
-            DrawingHelper.ClearCache();
             CurrentSpecie = Species.First();
             CurrentPlayer = CurrentSpecie.Genomes.First();
         }
 
         private void DrawGenome()
         {
-            DrawingHelper.DrawGenome(_pictureBox.CreateGraphics(), CurrentPlayer);
-            //_pictureBox.Invalidate();
+            DrawingHelper.DrawGenome(_networkGraphGraphics, CurrentPlayer);
         }
     }
 }

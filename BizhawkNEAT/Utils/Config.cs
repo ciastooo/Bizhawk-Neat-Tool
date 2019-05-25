@@ -42,5 +42,9 @@ namespace BizhawkNEAT.Utils
         }
 
         public static string[] ButtonNames = new string[] { "A", "B", "Up", "Down", "left", "Right" };
+
+        // Form
+
+        public static bool DrawGenome { get; set; } = false;
     }
 }
