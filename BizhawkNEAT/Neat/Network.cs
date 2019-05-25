@@ -16,20 +16,18 @@ namespace BizhawkNEAT.Neat
         public int Generation { get; set; }
 
         private int CurrentFrame { get; set; }
-
         private int Timeout { get; set; }
-
         private int RightmostPosition { get; set; }
-
         private Specie CurrentSpecie { get; set; }
         private Genome CurrentPlayer { get; set; }
         private bool[] CurrentOutput { get; set; }
+        public int TopFitnessInGeneration { get; set; }
 
         public Network(GameInformationHandler gameInformationHandler, Graphics networkGraphGraphics)
         {
             _gameInformationHandler = gameInformationHandler;
             _networkGraphGraphics = networkGraphGraphics;
-            Generation = 0;
+            Generation = 1;
             Species = new List<Specie>();
             CurrentFrame = 0;
             Timeout = Config.Timeout;
@@ -55,11 +53,11 @@ namespace BizhawkNEAT.Neat
             for (int i = 0; i < Config.Population; i++)
             {
                 var newGenome = new Genome(progenitorGenome);
+                newGenome.TryMutate();
                 initSpecie.Genomes.Add(newGenome);
             }
 
             Species.Add(initSpecie);
-            NextGeneration();
             CurrentSpecie = Species.First();
             CurrentPlayer = CurrentSpecie.Genomes.First();
         }
@@ -69,7 +67,7 @@ namespace BizhawkNEAT.Neat
             if (CurrentFrame % 5 == 0)
             {
                 EvaluateCurrentPlayer();
-                if (Config.DrawGenome && CurrentFrame % 20 == 0)
+                if (Config.DrawGenome && CurrentFrame % 25 == 0)
                     DrawGenome();
             }
 
@@ -94,6 +92,10 @@ namespace BizhawkNEAT.Neat
                 }
 
                 CurrentPlayer.Fitness = fitness;
+                if (fitness > TopFitnessInGeneration)
+                {
+                    TopFitnessInGeneration = fitness;
+                }
                 Console.WriteLine($"Generation: {Generation}; Specie: {CurrentSpecie.Name} ({Species.IndexOf(CurrentSpecie) + 1}/{Species.Count}); Genome: {CurrentSpecie.Genomes.IndexOf(CurrentPlayer) + 1}/{CurrentSpecie.Genomes.Count}; Fitness: {fitness};");
                 InitializeNextRun();
             }
@@ -121,35 +123,55 @@ namespace BizhawkNEAT.Neat
             CurrentOutput = CurrentPlayer.Propagate(input);
         }
 
-        private void NextGeneration()
+        private List<Specie> RemoveStaleSpecies(IList<Specie> species)
         {
-            var newGeneration = new List<Specie>();
-            var newGenerationCount = 0;
-            var totalAverageFitness = 0d;
-
-            foreach (var specie in Species)
+            var survivedSpecies = new List<Specie>();
+            foreach (var specie in species)
             {
-                var childSpecie = new Specie(specie.Name);
-                childSpecie.Genomes = specie.GetMostFitGenomes();
-                if (childSpecie.Genomes.Count > 0)
+                if (specie.Staleness < Config.StalenessThreshold || specie.TopFitness >= TopFitnessInGeneration)
                 {
-                    newGeneration.Add(childSpecie);
-                    newGenerationCount += childSpecie.Genomes.Count;
-                    totalAverageFitness += specie.AverageFitness;
+                    specie.Staleness = 0;
+                    survivedSpecies.Add(specie);
                 }
             }
+            return survivedSpecies;
+        }
+
+        private IList<Specie> CullSpecies(IList<Specie> species)
+        {
+            foreach(var specie in species)
+            {
+                specie.Genomes = new List<Genome> { specie.Genomes.First() };
+            }
+            return species;
+        }
+
+        private void NextGeneration()
+        {
+            foreach (var specie in Species)
+            {
+                specie.Genomes = specie.GetMostFitGenomes();
+            }
+
+            Species = RemoveStaleSpecies(Species);
+
+            var totalAverageFitness = Species.Sum(s => s.AverageFitness + 1);
+            Species = Species.Where(s => (s.AverageFitness / totalAverageFitness) * Config.Population >= 1).ToList();
+            totalAverageFitness = Species.Sum(s => s.AverageFitness + 1);
 
             var nextGenerationChildrenGenomes = new List<Genome>();
             foreach (var specie in Species)
             {
-                var childrenGenomesTobreed = (int)(specie.AverageFitness / totalAverageFitness * (Config.Population - newGenerationCount) - 1);
+                var childrenGenomesTobreed = (int)((specie.AverageFitness / totalAverageFitness) * Config.Population - 1);
                 for (int i = 0; i < childrenGenomesTobreed; i++)
                 {
                     nextGenerationChildrenGenomes.Add(specie.Breed());
                 }
             }
 
-            while (newGenerationCount + nextGenerationChildrenGenomes.Count < Config.Population)
+            Species = CullSpecies(Species);
+
+            while (Species.Count + nextGenerationChildrenGenomes.Count < Config.Population)
             {
                 var randomSpecie = Species.GetRandomElement();
                 nextGenerationChildrenGenomes.Add(randomSpecie.Breed());
@@ -157,11 +179,10 @@ namespace BizhawkNEAT.Neat
 
             foreach (var childrenGenome in nextGenerationChildrenGenomes)
             {
-                AssignSpecie(newGeneration, childrenGenome);
+                AssignSpecie(Species, childrenGenome);
             }
 
             Generation++;
-            Species = newGeneration;
         }
 
         private void AssignSpecie(IList<Specie> species, Genome genomeToAdd)

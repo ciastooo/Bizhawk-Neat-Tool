@@ -35,7 +35,7 @@ namespace BizhawkNEAT.Utils
 
             foreach (var targetNodeGeneKey in targetGenome.NodeGenes.Keys)
             {
-                if (sourceGenome.NodeGenes.ContainsKey(targetNodeGeneKey))
+                if (!sourceGenome.NodeGenes.ContainsKey(targetNodeGeneKey))
                 {
                     disjointNodes += 1;
                 }

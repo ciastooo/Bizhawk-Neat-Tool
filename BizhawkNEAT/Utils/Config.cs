@@ -20,7 +20,7 @@ namespace BizhawkNEAT.Utils
         public static double WeightStep { get; private set; } = 0.1;
 
         public static int Population { get; private set; } = 300;
-
+        public static int StalenessThreshold { get; private set; } = 15;
         public static double CrossoverChance { get; private set; } = 0.75;
 
         public static int Timeout { get; private set; } = 20;

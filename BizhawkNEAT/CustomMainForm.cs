@@ -94,9 +94,9 @@ namespace BizHawk.Client.EmuHawk
         {
             var bitmap = new Bitmap(networkGraph.Width, networkGraph.Height);
             networkGraph.Image = bitmap;
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            SetStyle(ControlStyles.UserPaint, true);
+            //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            //SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            //SetStyle(ControlStyles.UserPaint, true);
             gameInformationHandler.SaveGameState();
             network = new Network(gameInformationHandler, networkGraph.CreateGraphics());
             network.Init(13 * 13 + 1, Config.ButtonNames.Length);

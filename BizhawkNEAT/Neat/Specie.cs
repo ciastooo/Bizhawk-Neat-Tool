@@ -7,6 +7,8 @@ namespace BizhawkNEAT.Neat
     public class Specie
     {
         public string Name { get; set; }
+        public int TopFitness { get; set; }
+        public int Staleness { get; set; }
         public double AverageFitness
         {
             get
@@ -32,14 +34,24 @@ namespace BizhawkNEAT.Neat
 
         public IList<Genome> GetMostFitGenomes()
         {
-            return Genomes.OrderByDescending(g => g.Fitness).Take(Genomes.Count / 2).ToList();
+            var sortedGenomes = Genomes.OrderByDescending(g => g.Fitness).Take((Genomes.Count + 1) / 2).ToList();
+            var mostFitGenomeFitnessInSpecie = sortedGenomes[0].Fitness;
+            if(mostFitGenomeFitnessInSpecie > TopFitness)
+            {
+                TopFitness = mostFitGenomeFitnessInSpecie;
+                Staleness = 0;
+            } else
+            {
+                Staleness += 1;
+            }
+            return sortedGenomes;
         }
 
         public Genome Breed()
         {
             Genome childGenome;
 
-            if (RandomGenerator.GetRandomResult(Config.CrossoverChance) && Genomes.Count > 1)
+            if (Genomes.Count > 1 && RandomGenerator.GetRandomResult(Config.CrossoverChance))
             {
                 childGenome = Crossover();
             }
