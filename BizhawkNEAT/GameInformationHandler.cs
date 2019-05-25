@@ -10,6 +10,7 @@ namespace BizhawkNEAT
         private JoypadApi Joypad { get; set; }
         private IMem Memory { get; set; }
         private MemorySaveStateApi SaveState { get; set; }
+        private EmuApi EmuApi { get; set; }
 
         private string SaveStateId { get; set; }
 
@@ -30,6 +31,11 @@ namespace BizhawkNEAT
         public void SetSaveStateApi(MemorySaveStateApi memorySaveStateApi)
         {
             SaveState = memorySaveStateApi;
+        }
+
+        public void SetEmuApi(EmuApi emuApi)
+        {
+            EmuApi = emuApi;
         }
 
         public int MarioX
@@ -197,6 +203,16 @@ namespace BizhawkNEAT
         public void SaveGameState()
         {
             SaveStateId = SaveState.SaveCoreStateToMemory();
+        }
+
+        public void Pause()
+        {
+            ClientApi.Pause();
+        }
+
+        public void Unpause()
+        {
+            ClientApi.Unpause();
         }
     }
 }

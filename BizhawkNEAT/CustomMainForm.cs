@@ -34,6 +34,15 @@ namespace BizHawk.Client.EmuHawk
                 gameInformationHandler.SetSaveStateApi(value);
             }
         }
+        [RequiredApi]
+        private EmuApi EmuApi
+        {
+            set
+            {
+                gameInformationHandler.SetEmuApi(value);
+            }
+        }
+
 
         private GameInformationHandler gameInformationHandler { get; set; }
         private Network network { get; set; }
@@ -57,9 +66,17 @@ namespace BizHawk.Client.EmuHawk
 
         public void NewUpdate(ToolFormUpdateType type)
         {
-            if (network != null && type == ToolFormUpdateType.PostFrame)
+            if (network != null)
             {
-                network.Train();
+                if (type == ToolFormUpdateType.PreFrame)
+                {
+                    gameInformationHandler.Pause();
+                }
+                if (type == ToolFormUpdateType.PostFrame)
+                {
+                    network.Train();
+                    gameInformationHandler.Unpause();
+                }
             }
         }
 

@@ -77,6 +77,14 @@ namespace BizhawkNEAT.Neat
                 childGenome.AddNodeGene(new NodeGene(node));
             }
 
+            foreach (var node in father.NodeGenes.Values)
+            {
+                if (!childGenome.NodeGenes.ContainsKey(node.Id))
+                {
+                    childGenome.AddNodeGene(new NodeGene(node));
+                }
+            }
+
             foreach (var motherConnectionGene in mother.ConnectionGenes)
             {
                 ConnectionGene newChildConnection;

@@ -9,15 +9,16 @@ namespace BizhawkNEAT.Utils
     {
         public static T GetRandomElement<T>(this IEnumerable<T> source)
         {
-            var randomIndex = RandomGenerator.GetRandom().Next(source.Count());
-            return source.ElementAtOrDefault(randomIndex);
+            var sourceList = source.ToList();
+            var randomIndex = RandomGenerator.GetRandom().Next(sourceList.Count);
+            return sourceList.ElementAtOrDefault(randomIndex);
         }
 
         public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)
         {
             return sourceDictionary.Values.Where(x =>
-                (x.PreviousNode == source && x.NextNode == target) ||
-                (x.PreviousNode == target && x.NextNode == source))
+                (x.PreviousNode.Id == source.Id && x.NextNode.Id == target.Id) ||
+                (x.PreviousNode.Id == target.Id && x.NextNode.Id == source.Id))
                 .FirstOrDefault();
         }
 

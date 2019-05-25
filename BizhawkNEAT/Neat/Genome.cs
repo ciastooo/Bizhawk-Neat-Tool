@@ -71,7 +71,7 @@ namespace BizhawkNEAT.Neat
                     connectionGene.NextNode.Value += connectionGene.PreviousNode.Value * connectionGene.Weight;
                     propagatedConnections.Add(connectionGene);
 
-                    if (!connectionsToPropagate.Any(cg => cg.NextNode == connectionGene.NextNode && cg != connectionGene))
+                    if (!connectionsToPropagate.Any(cg => cg.NextNode.Id == connectionGene.NextNode.Id && cg != connectionGene))
                     {
                         connectionGene.NextNode.Value = ActivationFunctions.Sigmoid.Count(connectionGene.NextNode.Value);
                         connectionGene.NextNode.IsReady = true;

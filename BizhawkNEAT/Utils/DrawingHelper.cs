@@ -26,7 +26,7 @@ namespace BizhawkNEAT.Utils
             }
             return b;
         }
-        private static Pen GetPen(Color color)
+        private static Pen GetPen(Color color, int width = 1)
         {
             Pen p;
             if (!_pens.TryGetValue(color, out p))
@@ -41,7 +41,8 @@ namespace BizhawkNEAT.Utils
         {
             graphics.Clear(SystemColors.Control);
 
-            graphics.DrawRectangle(GetPen(Color.Black), 9, 9, 131, 131);
+            graphics.FillRectangle(GetBrush(Color.LightGray), 9, 9, 132, 132);
+            graphics.DrawRectangle(GetPen(Color.Black), 9, 9, 132, 132);
 
             var nodesToDraw = GetNodesToDraw(genome);
 
@@ -55,7 +56,7 @@ namespace BizhawkNEAT.Utils
                         color = Color.Black;
                         break;
                     case 0:
-                        color = SystemColors.Control;
+                        color = Color.LightGray;
                         break;
                     case 1:
                         color = Color.White;
@@ -72,6 +73,7 @@ namespace BizhawkNEAT.Utils
                 }
 
                 graphics.FillRectangle(GetBrush(Color.FromArgb(opacity, color)), node.Value.X, node.Value.Y, 10, 10);
+                graphics.DrawRectangle(GetPen(Color.FromArgb(opacity, color)), node.Value.X, node.Value.Y, 10, 10);
             }
 
             foreach (var connection in genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled))
@@ -87,7 +89,7 @@ namespace BizhawkNEAT.Utils
 
                 var color = connection.Weight > 0 ? Color.Green : Color.Red;
 
-                graphics.DrawLine(new Pen(Color.FromArgb(opacity, color)), previousNodeToDraw.X + 1, previousNodeToDraw.Y, nextNodeToDraw.X - 3, nextNodeToDraw.Y);
+                graphics.DrawLine(GetPen(Color.FromArgb(opacity, color), 3), previousNodeToDraw.X + 9, previousNodeToDraw.Y + 4, nextNodeToDraw.X, nextNodeToDraw.Y + 4);
             }
 
             return graphics;
@@ -140,7 +142,7 @@ namespace BizhawkNEAT.Utils
             {
                 var nodeToDraw = new NodeDrawElement
                 {
-                    X = 250,
+                    X = 150,
                     Y = 80
                 };
                 nodesToDraw.Add(hiddenNode.Id, nodeToDraw);
@@ -157,7 +159,7 @@ namespace BizhawkNEAT.Utils
                     var previousNodeToDraw = nodesToDraw[previousNode.Id];
                     var nextNodeToDraw = nodesToDraw[nextNode.Id];
 
-                    if (nextNode.Type == NodeGeneType.Hidden)
+                    if (previousNode.Type == NodeGeneType.Hidden)
                     {
                         previousNodeToDraw.X = 0.75f * previousNodeToDraw.X + 0.25f * nextNodeToDraw.X;
                         previousNodeToDraw.Y = 0.75f * previousNodeToDraw.Y + 0.25f * nextNodeToDraw.Y;
@@ -166,25 +168,34 @@ namespace BizhawkNEAT.Utils
                         {
                             previousNodeToDraw.X -= 40;
                         }
+                        if (previousNodeToDraw.X < 150)
+                        {
+                            previousNodeToDraw.X = 150;
+                        }
+
+                        if (previousNodeToDraw.X > 470)
+                        {
+                            previousNodeToDraw.X = 470;
+                        }
                     }
-                    else if (nextNode.Type == NodeGeneType.Output)
+                    if (nextNode.Type == NodeGeneType.Hidden)
                     {
-                        previousNodeToDraw.X = 0.25f * previousNodeToDraw.X + 0.75f * nextNodeToDraw.X;
-                        previousNodeToDraw.Y = 0.25f * previousNodeToDraw.Y + 0.75f * nextNodeToDraw.Y;
+                        nextNodeToDraw.X = 0.25f * previousNodeToDraw.X + 0.75f * nextNodeToDraw.X;
+                        nextNodeToDraw.Y = 0.25f * previousNodeToDraw.Y + 0.75f * nextNodeToDraw.Y;
 
                         if (previousNodeToDraw.X >= nextNodeToDraw.X)
                         {
                             nextNodeToDraw.X += 40;
                         }
-                    }
-                    if (previousNodeToDraw.X < 150)
-                    {
-                        previousNodeToDraw.X = 150;
-                    }
+                        if (nextNodeToDraw.X < 150)
+                        {
+                            nextNodeToDraw.X = 150;
+                        }
 
-                    if (previousNodeToDraw.X > 470)
-                    {
-                        previousNodeToDraw.X = 470;
+                        if (nextNodeToDraw.X > 470)
+                        {
+                            nextNodeToDraw.X = 470;
+                        }
                     }
                 }
             }
