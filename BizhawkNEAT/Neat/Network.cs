@@ -23,6 +23,7 @@ namespace BizhawkNEAT.Neat
 
         private Specie CurrentSpecie { get; set; }
         private Genome CurrentPlayer { get; set; }
+        private bool[] CurrentOutput { get; set; }
 
         public Network(GameInformationHandler gameInformationHandler, Graphics networkGraphGraphics)
         {
@@ -72,6 +73,8 @@ namespace BizhawkNEAT.Neat
                     DrawGenome();
             }
 
+            _gameInformationHandler.HandleOutput(CurrentOutput);
+
             var marioX = _gameInformationHandler.MarioX;
             if (marioX > RightmostPosition)
             {
@@ -100,6 +103,7 @@ namespace BizhawkNEAT.Neat
 
         private void InitializeNextRun()
         {
+            CurrentOutput = new bool[] { false, false, false, false, false, false };
             _gameInformationHandler.ClearJoyPad();
             _gameInformationHandler.LoadSaveState();
             RightmostPosition = 0;
@@ -114,9 +118,7 @@ namespace BizhawkNEAT.Neat
         {
             var input = _gameInformationHandler.GetNeuralNetInputs();
 
-            var output = CurrentPlayer.Propagate(input);
-
-            _gameInformationHandler.HandleOutput(output);
+            CurrentOutput = CurrentPlayer.Propagate(input);
         }
 
         private void NextGeneration()
