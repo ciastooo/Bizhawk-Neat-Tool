@@ -31,7 +31,7 @@ namespace BizhawkNEAT
         {
             SaveState = memorySaveStateApi;
         }
-        
+
         public int MarioX
         {
             get
@@ -115,9 +115,9 @@ namespace BizhawkNEAT
             var marioX = MarioX;
             var marioY = MarioY;
 
-            for (int y = -6; y <= 6; y++)
+            for (int y = -6 * 16; y <= 6 * 16; y += 16)
             {
-                for (int x = -6; x <= 6; x++)
+                for (int x = -6 * 16; x <= 6 * 16; x += 16)
                 {
                     inputs[index] = 0;
 
@@ -133,7 +133,7 @@ namespace BizhawkNEAT
                         var xDistance = Math.Abs(enemy.Item1 - (marioX + x));
                         var yDistance = Math.Abs(enemy.Item2 - (marioY + y));
 
-                        if(xDistance <= 8 && yDistance <= 8)
+                        if (xDistance <= 8 && yDistance <= 8)
                         {
                             inputs[index] = -1;
                         }
@@ -156,13 +156,13 @@ namespace BizhawkNEAT
 
         public void HandleOutput(bool[] output)
         {
-            if(output.Length != Config.ButtonNames.Length)
+            if (output.Length != Config.ButtonNames.Length)
             {
                 throw new Exception("Too many inputs to the joypad");
             }
 
             // If LEFT and RIGHT are pressed
-            if(output[4] && output[5])
+            if (output[4] && output[5])
             {
                 output[4] = false;
                 output[5] = false;

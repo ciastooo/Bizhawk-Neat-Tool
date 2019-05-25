@@ -2,6 +2,7 @@
 using BizhawkNEAT;
 using BizhawkNEAT.Neat;
 using BizhawkNEAT.Utils;
+using System.Drawing;
 using System.Windows.Forms;
 
 [assembly: BizHawkExternalTool("NEAT", "Bizhawk tool for neat")]
@@ -17,7 +18,6 @@ namespace BizHawk.Client.EmuHawk
                 gameInformationHandler.SetJoypadApi(value);
             }
         }
-
         [RequiredApi]
         private IMem Memory
         {
@@ -26,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
                 gameInformationHandler.SetMemoryApi(value);
             }
         }
-
         [RequiredApi]
         private MemorySaveStateApi SaveState
         {
@@ -37,12 +36,10 @@ namespace BizHawk.Client.EmuHawk
         }
 
         private GameInformationHandler gameInformationHandler { get; set; }
-
         private Network network { get; set; }
 
         public CustomMainForm()
         {
-            InitializeComponent();
             gameInformationHandler = new GameInformationHandler();
         }
 
@@ -78,8 +75,13 @@ namespace BizHawk.Client.EmuHawk
 
         private void Start_Click(object sender, System.EventArgs e)
         {
+            var bitmap = new Bitmap(networkGraph.Width, networkGraph.Height);
+            networkGraph.Image = bitmap;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.UserPaint, true);
             gameInformationHandler.SaveGameState();
-            network = new Network(gameInformationHandler);
+            network = new Network(gameInformationHandler, networkGraph);
             network.Init(13 * 13 + 1, Config.ButtonNames.Length);
         }
     }

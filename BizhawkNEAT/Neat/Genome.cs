@@ -11,6 +11,7 @@ namespace BizhawkNEAT.Neat
         public Dictionary<int, NodeGene> NodeGenes { get; private set; }
 
         public List<NodeGene> InputNodes => NodeGenes.Where(ng => ng.Value.Type == NodeGeneType.Input).Select(ng => ng.Value).ToList();
+        public List<NodeGene> HiddenNodes => NodeGenes.Where(ng => ng.Value.Type == NodeGeneType.Hidden).Select(ng => ng.Value).ToList();
         public List<NodeGene> OutputNodes => NodeGenes.Where(ng => ng.Value.Type == NodeGeneType.Output).Select(ng => ng.Value).ToList();
 
         public int Fitness { get; set; }

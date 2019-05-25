@@ -19,7 +19,7 @@ namespace BizhawkNEAT.Utils
         public static double MutationPerturbateWeightProbability = 0.1;
         public static double WeightStep { get; private set; } = 0.1;
 
-        public static int Population { get; private set; } = 100;
+        public static int Population { get; private set; } = 300;
 
         public static double CrossoverChance { get; private set; } = 0.75;
 
