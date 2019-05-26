@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
             }
         }
 
-
         private GameInformationHandler gameInformationHandler { get; set; }
         private Network network { get; set; }
 
@@ -74,7 +73,13 @@ namespace BizHawk.Client.EmuHawk
                 }
                 if (type == ToolFormUpdateType.PostFrame)
                 {
+                    infoLabel.Text = $"Generation: {network.Generation}; MaxFitness: {network.TopFitnessInGeneration}; Specie: {network.CurrentSpecie.Name}; Genome: {network.CurrentSpecie.Genomes.IndexOf(network.CurrentPlayer)}/{network.CurrentSpecie.Genomes.Count}";
                     network.Train();
+                    if(fitnessChart.Series["Fitness"].Points.Count < network.Generation-1)
+                    {
+                        fitnessChart.Series["Fitness"].Points.AddXY(network.Generation-1, network.TopFitnessInPreviousGeneration);
+                        fitnessChart.Series["AverageFitness"].Points.AddXY(network.Generation-1, network.AverageFitnessInPreviousGeneration);
+                    }
                     gameInformationHandler.Unpause();
                 }
             }
@@ -92,6 +97,7 @@ namespace BizHawk.Client.EmuHawk
 
         private void Start_Click(object sender, System.EventArgs e)
         {
+            start.Enabled = false;
             var bitmap = new Bitmap(networkGraph.Width, networkGraph.Height);
             networkGraph.Image = bitmap;
             //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);

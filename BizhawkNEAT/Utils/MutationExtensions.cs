@@ -5,11 +5,19 @@ namespace BizhawkNEAT.Utils
 {
     public static class MutationExtensions
     {
-        public static void MutateAddConnection(this Genome genome)
+        public static void MutateAddConnection(this Genome genome, bool forceBias = false)
         {
-            var firstNode = genome.NodeGenes.Values.GetRandomElement();
+            NodeGene firstNode;
+            if(forceBias)
+            {
+                firstNode = genome.NodeGenes.Values.Where(g => g.Type == NodeGeneType.Input).Last();
+            } else
+            {
+                firstNode = genome.NodeGenes.Values.GetRandomElement();
+            }
+
             var secondNode = genome.NodeGenes.Values.GetRandomElement();
-            while (firstNode == secondNode ||
+            while (firstNode.Id == secondNode.Id ||
                    genome.ConnectionGenes.GetConnection(firstNode, secondNode) != null ||
                    firstNode.Type == NodeGeneType.Input && secondNode.Type == NodeGeneType.Input ||
                    firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Output)
@@ -33,7 +41,7 @@ namespace BizhawkNEAT.Utils
         public static void MutateAddNode(this Genome genome)
         {
             var connection = genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled).GetRandomElement();
-            if(connection == null)
+            if (connection == null)
             {
                 return;
             }
@@ -64,21 +72,17 @@ namespace BizhawkNEAT.Utils
             toMutate.Toggle(enable);
         }
 
-        public static void MutateAdjustWeight(this Genome genome, bool randomizeweight = false)
+        public static void MutateAdjustWeight(this Genome genome)
         {
-            var toMutate = genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled).GetRandomElement();
-            if (toMutate == null)
+            foreach (var connection in genome.ConnectionGenes.Values)
             {
-                return;
-            }
-
-            if (randomizeweight)
-            {
-                toMutate.SetWeight(RandomGenerator.NewWeight());
-            }
-            else
-            {
-                toMutate.SetWeight(toMutate.Weight + RandomGenerator.NewWeight(Config.WeightStep));
+                if (RandomGenerator.GetRandomResult(Config.MutationPerturbateWeightProbability))
+                {
+                    connection.SetWeight(RandomGenerator.NewWeight());
+                } else
+                {
+                    connection.SetWeight(connection.Weight + RandomGenerator.NewWeight(Config.WeightStep));
+                }
             }
         }
     }

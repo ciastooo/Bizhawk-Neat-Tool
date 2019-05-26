@@ -18,10 +18,12 @@ namespace BizhawkNEAT.Neat
         private int CurrentFrame { get; set; }
         private int Timeout { get; set; }
         private int RightmostPosition { get; set; }
-        private Specie CurrentSpecie { get; set; }
-        private Genome CurrentPlayer { get; set; }
+        public Specie CurrentSpecie { get; set; }
+        public Genome CurrentPlayer { get; set; }
         private bool[] CurrentOutput { get; set; }
         public int TopFitnessInGeneration { get; set; }
+        public int TopFitnessInPreviousGeneration { get; set; }
+        public double AverageFitnessInPreviousGeneration { get; set; }
 
         public Network(GameInformationHandler gameInformationHandler, Graphics networkGraphGraphics)
         {
@@ -128,9 +130,17 @@ namespace BizhawkNEAT.Neat
             var survivedSpecies = new List<Specie>();
             foreach (var specie in species)
             {
-                if (specie.Staleness < Config.StalenessThreshold || specie.TopFitness >= TopFitnessInGeneration)
+                if (specie.Genomes.First().Fitness > specie.TopFitness)
                 {
+                    specie.TopFitness = specie.Genomes.First().Fitness;
                     specie.Staleness = 0;
+                } else
+                {
+                    specie.Staleness += 1;
+                }
+
+                if(specie.Staleness < Config.StalenessThreshold || specie.TopFitness >= TopFitnessInGeneration)
+                {
                     survivedSpecies.Add(specie);
                 }
             }
@@ -148,6 +158,7 @@ namespace BizhawkNEAT.Neat
 
         private void NextGeneration()
         {
+            AverageFitnessInPreviousGeneration = Species.Average(s => s.AverageFitness);
             foreach (var specie in Species)
             {
                 specie.Genomes = specie.GetMostFitGenomes();
@@ -155,9 +166,9 @@ namespace BizhawkNEAT.Neat
 
             Species = RemoveStaleSpecies(Species);
 
-            var totalAverageFitness = Species.Sum(s => s.AverageFitness + 1);
+            var totalAverageFitness = Species.Sum(s => s.AverageFitness);
             Species = Species.Where(s => (s.AverageFitness / totalAverageFitness) * Config.Population >= 1).ToList();
-            totalAverageFitness = Species.Sum(s => s.AverageFitness + 1);
+            totalAverageFitness = Species.Sum(s => s.AverageFitness);
 
             var nextGenerationChildrenGenomes = new List<Genome>();
             foreach (var specie in Species)
@@ -183,6 +194,8 @@ namespace BizhawkNEAT.Neat
             }
 
             Generation++;
+            TopFitnessInPreviousGeneration = TopFitnessInGeneration;
+            TopFitnessInGeneration = 0;
         }
 
         private void AssignSpecie(IList<Specie> species, Genome genomeToAdd)

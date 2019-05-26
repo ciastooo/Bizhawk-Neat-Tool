@@ -34,16 +34,9 @@ namespace BizhawkNEAT.Neat
 
         public IList<Genome> GetMostFitGenomes()
         {
-            var sortedGenomes = Genomes.OrderByDescending(g => g.Fitness).Take((Genomes.Count + 1) / 2).ToList();
+            var averageFitness = AverageFitness;
+            var sortedGenomes = Genomes.OrderByDescending(g => g.Fitness).Take((Genomes.Count + 1) / 2).Where(g => g.Fitness >= averageFitness).ToList();
             var mostFitGenomeFitnessInSpecie = sortedGenomes[0].Fitness;
-            if(mostFitGenomeFitnessInSpecie > TopFitness)
-            {
-                TopFitness = mostFitGenomeFitnessInSpecie;
-                Staleness = 0;
-            } else
-            {
-                Staleness += 1;
-            }
             return sortedGenomes;
         }
 

@@ -126,6 +126,11 @@ namespace BizhawkNEAT.Neat
                 this.MutateAddConnection();
             }
 
+            if (RandomGenerator.GetRandomResult(Config.MutationAddConnectionToBiasProbability))
+            {
+                this.MutateAddConnection(true);
+            }
+
             if (RandomGenerator.GetRandomResult(Config.MutationAddNodeProbability))
             {
                 this.MutateAddNode();
@@ -144,11 +149,6 @@ namespace BizhawkNEAT.Neat
             if (RandomGenerator.GetRandomResult(Config.MutationEnableConnectionProbability))
             {
                 this.MutateToggleConnection(true);
-            }
-
-            if (RandomGenerator.GetRandomResult(Config.MutationPerturbateWeightProbability))
-            {
-                this.MutateAdjustWeight(true);
             }
         }
     }

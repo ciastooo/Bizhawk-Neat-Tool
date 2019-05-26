@@ -132,7 +132,7 @@ namespace BizhawkNEAT.Utils
                 var outputNode = genome.OutputNodes[i];
                 var nodeToDraw = new NodeDrawElement
                 {
-                    X = 500,
+                    X = 450,
                     Y = 30 + 13 * i
                 };
                 nodesToDraw.Add(outputNode.Id, nodeToDraw);
@@ -173,9 +173,9 @@ namespace BizhawkNEAT.Utils
                             previousNodeToDraw.X = 150;
                         }
 
-                        if (previousNodeToDraw.X > 470)
+                        if (previousNodeToDraw.X > 420)
                         {
-                            previousNodeToDraw.X = 470;
+                            previousNodeToDraw.X = 420;
                         }
                     }
                     if (nextNode.Type == NodeGeneType.Hidden)
@@ -192,9 +192,9 @@ namespace BizhawkNEAT.Utils
                             nextNodeToDraw.X = 150;
                         }
 
-                        if (nextNodeToDraw.X > 470)
+                        if (nextNodeToDraw.X > 420)
                         {
-                            nextNodeToDraw.X = 470;
+                            nextNodeToDraw.X = 420;
                         }
                     }
                 }
