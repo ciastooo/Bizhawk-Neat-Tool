@@ -134,12 +134,13 @@ namespace BizhawkNEAT.Neat
                 {
                     specie.TopFitness = specie.Genomes.First().Fitness;
                     specie.Staleness = 0;
-                } else
+                }
+                else
                 {
                     specie.Staleness += 1;
                 }
 
-                if(specie.Staleness < Config.StalenessThreshold || specie.TopFitness >= TopFitnessInGeneration)
+                if (specie.Staleness < Config.StalenessThreshold || specie.TopFitness >= TopFitnessInGeneration)
                 {
                     survivedSpecies.Add(specie);
                 }
@@ -149,11 +150,27 @@ namespace BizhawkNEAT.Neat
 
         private IList<Specie> CullSpecies(IList<Specie> species)
         {
-            foreach(var specie in species)
+            foreach (var specie in species)
             {
                 specie.Genomes = new List<Genome> { specie.Genomes.First() };
             }
             return species;
+        }
+
+        private void SetGenomeRanks(IList<Specie> species)
+        {
+            var genomeList = new List<Genome>();
+            foreach (var specie in Species)
+            {
+                genomeList.AddRange(specie.Genomes);
+            }
+            // Higher rank means better genome
+            genomeList = genomeList.OrderBy(g => g.Fitness).ToList();
+            for (int i = 0; i < genomeList.Count; i++)
+            {
+                var genome = genomeList[i];
+                genome.GlobalRank = i;
+            }
         }
 
         private void NextGeneration()
@@ -166,14 +183,14 @@ namespace BizhawkNEAT.Neat
 
             Species = RemoveStaleSpecies(Species);
 
-            var totalAverageFitness = Species.Sum(s => s.AverageFitness);
-            Species = Species.Where(s => (s.AverageFitness / totalAverageFitness) * Config.Population >= 1).ToList();
-            totalAverageFitness = Species.Sum(s => s.AverageFitness);
+            SetGenomeRanks(Species);
+            Species = Species.Where(s => s.AverageGlobalRank * Config.Population >= 1).ToList();
+            var totalAverageRanks = Species.Sum(s => s.AverageGlobalRank);
 
             var nextGenerationChildrenGenomes = new List<Genome>();
             foreach (var specie in Species)
             {
-                var childrenGenomesTobreed = (int)((specie.AverageFitness / totalAverageFitness) * Config.Population - 1);
+                var childrenGenomesTobreed = (int)((specie.AverageGlobalRank / totalAverageRanks) * Config.Population - 1);
                 for (int i = 0; i < childrenGenomesTobreed; i++)
                 {
                     nextGenerationChildrenGenomes.Add(specie.Breed());

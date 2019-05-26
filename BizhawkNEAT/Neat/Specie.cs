@@ -9,13 +9,9 @@ namespace BizhawkNEAT.Neat
         public string Name { get; set; }
         public int TopFitness { get; set; }
         public int Staleness { get; set; }
-        public double AverageFitness
-        {
-            get
-            {
-                return Genomes.Average(g => g.Fitness);
-            }
-        }
+        public double AverageFitness => Genomes.Average(g => g.Fitness);
+        public double AverageGlobalRank => Genomes.Average(g => g.GlobalRank);
+
         public IList<Genome> Genomes { get; set; }
 
         public Genome Progenitor
@@ -35,7 +31,7 @@ namespace BizhawkNEAT.Neat
         public IList<Genome> GetMostFitGenomes()
         {
             var averageFitness = AverageFitness;
-            var sortedGenomes = Genomes.OrderByDescending(g => g.Fitness).Take((Genomes.Count + 1) / 2).Where(g => g.Fitness >= averageFitness).ToList();
+            var sortedGenomes = Genomes.OrderByDescending(g => g.Fitness).Take((Genomes.Count + 1) / 2).ToList();
             var mostFitGenomeFitnessInSpecie = sortedGenomes[0].Fitness;
             return sortedGenomes;
         }

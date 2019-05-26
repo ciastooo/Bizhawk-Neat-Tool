@@ -115,15 +115,15 @@ namespace BizhawkNEAT
         {
             var enemiesPositions = GetEnemiesPositions();
 
-            var inputs = new int[13 * 13 + 1];
+            var inputs = new int[Config.InputNodesCount];
             var index = 0;
 
             var marioX = MarioX;
             var marioY = MarioY;
 
-            for (int y = -6 * 16; y <= 6 * 16; y += 16)
+            for (int y = Config.UpYOffset * 16; y <= Config.DownYOffset * 16; y += 16)
             {
-                for (int x = -6 * 16; x <= 6 * 16; x += 16)
+                for (int x = Config.LeftXOffset * 16; x <= Config.RightXOffset * 16; x += 16)
                 {
                     inputs[index] = 0;
 

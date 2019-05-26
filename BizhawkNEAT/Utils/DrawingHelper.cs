@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Neat;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -41,8 +42,13 @@ namespace BizhawkNEAT.Utils
         {
             graphics.Clear(SystemColors.Control);
 
-            graphics.FillRectangle(GetBrush(Color.LightGray), 9, 9, 132, 132);
-            graphics.DrawRectangle(GetPen(Color.Black), 9, 9, 132, 132);
+            //70 + 10 * x
+            var inputBoxXBound = 69 + 10 * Config.LeftXOffset;
+            var inputBoxYBound = 69 + 10 * Config.UpYOffset;
+            var inputBoxWidth = (Math.Abs(Config.LeftXOffset) + Config.RightXOffset + 1) * 10;
+            var inputBoxHeight = (Math.Abs(Config.UpYOffset) + Config.DownYOffset + 1) * 10;
+            graphics.FillRectangle(GetBrush(Color.LightGray), inputBoxXBound, inputBoxYBound, inputBoxWidth, inputBoxHeight);
+            graphics.DrawRectangle(GetPen(Color.Black), inputBoxXBound, inputBoxYBound, inputBoxWidth, inputBoxHeight);
 
             var nodesToDraw = GetNodesToDraw(genome);
 
@@ -92,6 +98,12 @@ namespace BizhawkNEAT.Utils
                 graphics.DrawLine(GetPen(Color.FromArgb(opacity, color), 3), previousNodeToDraw.X + 9, previousNodeToDraw.Y + 4, nextNodeToDraw.X, nextNodeToDraw.Y + 4);
             }
 
+            for (int i = 0; i < Config.ButtonNames.Length; i++)
+            {
+                var buttonName = Config.ButtonNames[i];
+                graphics.DrawString(buttonName, new Font("Tahoma", 8), GetBrush(Color.Black), 465, 30 + 13 * i);
+            }
+
             return graphics;
         }
 
@@ -106,9 +118,9 @@ namespace BizhawkNEAT.Utils
 
             var inputNodes = genome.InputNodes;
             var inputIndex = 0;
-            for (int y = -6; y <= 6; y++)
+            for (int y = Config.UpYOffset; y <= Config.DownYOffset; y++)
             {
-                for (int x = -6; x <= 6; x++)
+                for (int x = Config.LeftXOffset; x <= Config.RightXOffset; x++)
                 {
                     var nodeToDraw = new NodeDrawElement
                     {
@@ -122,8 +134,8 @@ namespace BizhawkNEAT.Utils
 
             var biasNodeToDraw = new NodeDrawElement
             {
-                X = 130,
-                Y = 150
+                X = 70 + 10 * Config.RightXOffset,
+                Y = 90 + 10 * Config.DownYOffset
             };
             nodesToDraw.Add(inputNodes.Last().Id, biasNodeToDraw);
 

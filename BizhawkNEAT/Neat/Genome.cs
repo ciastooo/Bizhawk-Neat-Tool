@@ -15,6 +15,7 @@ namespace BizhawkNEAT.Neat
         public List<NodeGene> OutputNodes => NodeGenes.Where(ng => ng.Value.Type == NodeGeneType.Output).Select(ng => ng.Value).ToList();
 
         public int Fitness { get; set; }
+        public int GlobalRank { get; set; }
 
         public Genome()
         {
