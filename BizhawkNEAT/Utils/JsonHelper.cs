@@ -38,13 +38,11 @@ namespace BizhawkNEAT.Utils
                 {
                     Key = cg.Key,
                     Value = cg.Value.GetConnectionGeneJson()
-                })));
+                }))
+            );
             json.Add("NodeGenes", JToken.FromObject(
-                genome.NodeGenes.Select(ng => new
-                {
-                    Key = ng.Key,
-                    Value = ng.Value.GetNodeGeneJson()
-                })));
+                genome.NodeGenes.Select(ng => ng.Value.GetNodeGeneJson()))
+            );
 
             return json;
         }
@@ -53,8 +51,8 @@ namespace BizhawkNEAT.Utils
         {
             var json = new JObject();
 
-            json.Add("PreviousNode", connectionGene.PreviousNode.GetNodeGeneJson());
-            json.Add("NextNode", connectionGene.NextNode.GetNodeGeneJson());
+            json.Add("PreviousNodeId", connectionGene.PreviousNode.Id);
+            json.Add("NextNodeId", connectionGene.NextNode.Id);
             json.Add("Weight", connectionGene.Weight);
             json.Add("IsEnabled", connectionGene.IsEnabled);
 

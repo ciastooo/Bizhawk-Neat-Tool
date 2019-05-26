@@ -5,10 +5,10 @@
         public static int ConnectionCounter { get; private set; } = 0;
         public static int NodeCounter { get; private set; } = 0;
 
-        public static void Reset(int value = 0)
+        public static void Reset(int connectionCounter = 0, int nodeCounter = 0)
         {
-            ConnectionCounter = value;
-            NodeCounter = value;
+            ConnectionCounter = connectionCounter;
+            NodeCounter = nodeCounter;
         }
 
         public static int NextConnectionId()

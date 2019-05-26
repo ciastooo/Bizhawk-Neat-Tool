@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace BizhawkNEAT.Neat
 {
@@ -25,6 +26,14 @@ namespace BizhawkNEAT.Neat
             Type = source.Type;
             Value = source.Value;
             IsReady = source.IsReady;
+        }
+
+        public NodeGene(JToken json)
+        {
+            Id = json.Value<int>("Id");
+            Type = json.Value<NodeGeneType>("Type");
+            Value = 0;
+            IsReady = false;
         }
     }
 }

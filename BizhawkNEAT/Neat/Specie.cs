@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Utils;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +27,17 @@ namespace BizhawkNEAT.Neat
         {
             Genomes = new List<Genome>();
             Name = name ?? Config.GetNewSpecieName();
+        }
+
+        public Specie(JToken json)
+        {
+            Genomes = new List<Genome>();
+            Name = json.Value<string>("Name");
+            Staleness = json.Value<int>("Staleness");
+            foreach (var genomeJson in json.Children()["Genomes"])
+            {
+                Genomes.Add(new Genome(genomeJson));
+            }
         }
 
         public IList<Genome> GetMostFitGenomes()

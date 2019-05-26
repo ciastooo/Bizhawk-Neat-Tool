@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -62,6 +63,16 @@ namespace BizhawkNEAT.Neat
             Species.Add(initSpecie);
             CurrentSpecie = Species.First();
             CurrentPlayer = CurrentSpecie.Genomes.First();
+        }
+
+        public void Init(JToken json)
+        {
+            Generation = json.Value<int>("Generation");
+ 
+            foreach(var specieJson in json.Children()["Species"])
+            {
+                Species.Add(new Specie(specieJson));
+            }
         }
 
         public void Train()

@@ -17,6 +17,14 @@ namespace BizhawkNEAT.Neat
             IsEnabled = true;
         }
 
+        public ConnectionGene(NodeGene previousNode, NodeGene nextNode, double weight, bool isEnabled)
+        {
+            PreviousNode = previousNode;
+            NextNode = nextNode;
+            Weight = weight;
+            IsEnabled = isEnabled;
+        }
+
         public ConnectionGene(NodeGene previousNode, NodeGene nextNode, double weight)
         {
             PreviousNode = previousNode;

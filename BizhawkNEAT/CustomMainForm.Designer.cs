@@ -40,6 +40,7 @@
             this.loadButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.networkGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fitnessChart)).BeginInit();
             this.SuspendLayout();
@@ -56,7 +57,7 @@
             // 
             // networkGraph
             // 
-            this.networkGraph.Location = new System.Drawing.Point(13, 42);
+            this.networkGraph.Location = new System.Drawing.Point(12, 257);
             this.networkGraph.Name = "networkGraph";
             this.networkGraph.Size = new System.Drawing.Size(500, 170);
             this.networkGraph.TabIndex = 1;
@@ -93,7 +94,7 @@
             legend1.Enabled = false;
             legend1.Name = "Legend1";
             this.fitnessChart.Legends.Add(legend1);
-            this.fitnessChart.Location = new System.Drawing.Point(519, 12);
+            this.fitnessChart.Location = new System.Drawing.Point(12, 54);
             this.fitnessChart.Name = "fitnessChart";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
@@ -112,7 +113,7 @@
             series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
             this.fitnessChart.Series.Add(series1);
             this.fitnessChart.Series.Add(series2);
-            this.fitnessChart.Size = new System.Drawing.Size(338, 200);
+            this.fitnessChart.Size = new System.Drawing.Size(500, 200);
             this.fitnessChart.TabIndex = 4;
             this.fitnessChart.Text = "fitnessChart";
             // 
@@ -136,11 +137,20 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.DefaultExt = "json";
+            this.saveFileDialog.Filter = "\"neat.network (*.json)|*.json\"";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog";
+            // 
             // CustomMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(869, 225);
+            this.ClientSize = new System.Drawing.Size(524, 440);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.fitnessChart);
@@ -167,5 +177,6 @@
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BizhawkNEAT.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,36 @@ namespace BizhawkNEAT.Neat
             foreach (var connectionGene in toCopy.ConnectionGenes)
             {
                 AddConnectionGene(new ConnectionGene(connectionGene.Value), connectionGene.Key);
+            }
+        }
+
+        public Genome(JToken json)
+        {
+            ConnectionGenes = new Dictionary<int, ConnectionGene>();
+            NodeGenes = new Dictionary<int, NodeGene>();
+            foreach (var nodeJson in json.Children()["NodeGenes"])
+            {
+                var node = new NodeGene(nodeJson);
+                AddNodeGene(node);
+            }
+            foreach (var connectionJson in json.Children()["ConnectionGenes"])
+            {
+                var id = connectionJson.Value<int>("Key");
+                var value = connectionJson.Value<JToken>("Value");
+
+                var previousNodeId = value.Value<int>("PreviousNodeId");
+                var nextNodeId = value.Value<int>("NextNodeId");
+                var weight = value.Value<double>("Weight");
+                var isEnabled = value.Value<bool>("IsEnabled");
+
+                var connection = new ConnectionGene(
+                    NodeGenes[previousNodeId],
+                    NodeGenes[nextNodeId],
+                    weight,
+                    isEnabled
+                );
+
+                AddConnectionGene(connection, id);
             }
         }
 

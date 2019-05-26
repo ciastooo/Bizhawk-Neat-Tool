@@ -2,6 +2,7 @@
 using BizhawkNEAT;
 using BizhawkNEAT.Neat;
 using BizhawkNEAT.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Drawing;
@@ -119,15 +120,15 @@ namespace BizHawk.Client.EmuHawk
             Config.DrawGenome = showGenome.Checked;
         }
 
-        private void SaveButton_Click(object sender, System.EventArgs e)
+        private void SaveButton_Click(object _, EventArgs __)
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var json = new JObject();
 
                 var chartJson = new JObject();
-                chartJson.Add("Fitness", JToken.FromObject(fitnessChart.Series["Fitness"].Points.Select(p => new { x = p.XValue, y = p.YValues[0] }).ToList()));
-                chartJson.Add("AverageFitness", JToken.FromObject(fitnessChart.Series["AverageFitness"].Points.Select(p => new { x = p.XValue, y = p.YValues[0] }).ToList()));
+                chartJson.Add("Fitness", JToken.FromObject(fitnessChart.Series["Fitness"].Points.Select(p => p.YValues[0]).ToList()));
+                chartJson.Add("AverageFitness", JToken.FromObject(fitnessChart.Series["AverageFitness"].Points.Select(p => p.YValues[0]).ToList()));
                 json.Add("Chart", chartJson);
 
                 json.Add("ConnectionCounter", IdGenerator.ConnectionCounter);
@@ -151,9 +152,36 @@ namespace BizHawk.Client.EmuHawk
             }
         }
 
-        private void LoadButton_Click(object sender, System.EventArgs e)
+        private void LoadButton_Click(object _, EventArgs __)
         {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamReader reader = new StreamReader(openFileDialog.FileName))
+                {
+                    JObject json = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                    if (!json.HasValues)
+                    {
+                        var network = new Network(gameInformationHandler, networkGraph.CreateGraphics());
+                        var fitnessChartValues = json.Value<int[]>("Fitness");
+                        fitnessChart.Series["Fitness"].Points.Clear();
+                        for (int i = 0; i < fitnessChartValues.Length; i++)
+                        {
+                            fitnessChart.Series["Fitness"].Points.AddXY(i, fitnessChartValues[i]);
+                        }
 
+                        var averageFitnessChartValues = json.Value<double[]>("AverageFitness");
+                        fitnessChart.Series["AverageFitness"].Points.Clear();
+                        for (int i = 0; i < fitnessChartValues.Length; i++)
+                        {
+                            fitnessChart.Series["AverageFitness"].Points.AddXY(i, averageFitnessChartValues[i]);
+                        }
+
+                        IdGenerator.Reset(json.Value<int>("ConnectionCounter"), json.Value<int>("NodeCounter"));
+
+                        network.Init(json.GetValue("Network"));
+                    }
+                }
+            }
         }
     }
 }
