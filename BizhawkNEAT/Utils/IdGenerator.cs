@@ -2,23 +2,24 @@
 {
     public static class IdGenerator
     {
-        private static int _connectionCounter { get; set; } = 0;
-        private static int _nodeCounter { get; set; } = 0;
+        public static int ConnectionCounter { get; private set; } = 0;
+        public static int NodeCounter { get; private set; } = 0;
 
         public static void Reset(int value = 0)
         {
-            _connectionCounter = value;
-            _nodeCounter = value;
+            ConnectionCounter = value;
+            NodeCounter = value;
         }
 
         public static int NextConnectionId()
         {
-            return _connectionCounter++;
+            return ConnectionCounter++;
         }
 
         public static int NextNodeId()
         {
-            return _nodeCounter++;
+            return NodeCounter++;
         }
+
     }
 }

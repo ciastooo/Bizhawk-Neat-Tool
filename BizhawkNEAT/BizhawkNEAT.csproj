@@ -30,7 +30,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BizHawk-master\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -58,6 +65,7 @@
     <Compile Include="Utils\DrawingHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\IdGenerator.cs" />
+    <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MutationExtensions.cs" />
     <Compile Include="Utils\RandomGenerator.cs" />
     <Compile Include="Neat\ConnectionGene.cs" />
@@ -83,6 +91,12 @@
     <EmbeddedResource Include="CustomMainForm.resx">
       <DependentUpon>CustomMainForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

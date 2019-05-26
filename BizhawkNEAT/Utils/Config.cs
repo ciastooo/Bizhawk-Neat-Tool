@@ -40,10 +40,10 @@ namespace BizhawkNEAT.Utils
 
         public static bool DrawGenome { get; set; } = false;
 
-        public static int LeftXOffset { get; set; } = -1;
-        public static int RightXOffset { get; set; } = 4;
-        public static int UpYOffset { get; set; } = -2;
-        public static int DownYOffset { get; set; } = 4;
+        public static int LeftXOffset { get; set; } = -4;
+        public static int RightXOffset { get; set; } = 5;
+        public static int UpYOffset { get; set; } = -4;
+        public static int DownYOffset { get; set; } = 5;
 
         public static int InputNodesCount = (Math.Abs(LeftXOffset) + RightXOffset + 1) * (Math.Abs(UpYOffset) + DownYOffset + 1) + 1;
     }

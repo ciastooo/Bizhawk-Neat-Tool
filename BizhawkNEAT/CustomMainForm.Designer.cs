@@ -37,15 +37,18 @@
             this.showGenome = new System.Windows.Forms.CheckBox();
             this.infoLabel = new System.Windows.Forms.Label();
             this.fitnessChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.loadButton = new System.Windows.Forms.Button();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.networkGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fitnessChart)).BeginInit();
             this.SuspendLayout();
             // 
             // start
             // 
-            this.start.Location = new System.Drawing.Point(12, 12);
+            this.start.Location = new System.Drawing.Point(12, 13);
             this.start.Name = "start";
-            this.start.Size = new System.Drawing.Size(75, 23);
+            this.start.Size = new System.Drawing.Size(75, 22);
             this.start.TabIndex = 0;
             this.start.Text = "Start";
             this.start.UseVisualStyleBackColor = true;
@@ -113,11 +116,33 @@
             this.fitnessChart.TabIndex = 4;
             this.fitnessChart.Text = "fitnessChart";
             // 
+            // loadButton
+            // 
+            this.loadButton.Location = new System.Drawing.Point(438, 12);
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(75, 23);
+            this.loadButton.TabIndex = 5;
+            this.loadButton.Text = "Load";
+            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(357, 12);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 6;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
             // CustomMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(869, 225);
+            this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.loadButton);
             this.Controls.Add(this.fitnessChart);
             this.Controls.Add(this.infoLabel);
             this.Controls.Add(this.showGenome);
@@ -139,5 +164,8 @@
         private System.Windows.Forms.CheckBox showGenome;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.DataVisualization.Charting.Chart fitnessChart;
+        private System.Windows.Forms.Button loadButton;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
