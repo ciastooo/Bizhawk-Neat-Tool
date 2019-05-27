@@ -140,7 +140,7 @@
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "json";
-            this.saveFileDialog.Filter = "\"neat.network (*.json)|*.json\"";
+            this.saveFileDialog.Filter = "neat.network (*.json)|*.json\"";
             // 
             // openFileDialog
             // 

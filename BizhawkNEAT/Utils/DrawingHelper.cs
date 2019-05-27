@@ -45,8 +45,8 @@ namespace BizhawkNEAT.Utils
             //70 + 10 * x
             var inputBoxXBound = 69 + 10 * Config.LeftXOffset;
             var inputBoxYBound = 69 + 10 * Config.UpYOffset;
-            var inputBoxWidth = (Math.Abs(Config.LeftXOffset) + Config.RightXOffset + 1) * 10;
-            var inputBoxHeight = (Math.Abs(Config.UpYOffset) + Config.DownYOffset + 1) * 10;
+            var inputBoxWidth = (Math.Abs(Config.LeftXOffset) + Config.RightXOffset + 1) * 10 + 2;
+            var inputBoxHeight = (Math.Abs(Config.UpYOffset) + Config.DownYOffset + 1) * 10 + 2;
             graphics.FillRectangle(GetBrush(Color.LightGray), inputBoxXBound, inputBoxYBound, inputBoxWidth, inputBoxHeight);
             graphics.DrawRectangle(GetPen(Color.Black), inputBoxXBound, inputBoxYBound, inputBoxWidth, inputBoxHeight);
 

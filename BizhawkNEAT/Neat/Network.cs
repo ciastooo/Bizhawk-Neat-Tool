@@ -79,6 +79,8 @@ namespace BizhawkNEAT.Neat
 
             CurrentSpecie = Species.First();
             CurrentPlayer = CurrentSpecie.Genomes.First();
+            
+            _gameInformationHandler.LoadSaveState();
         }
 
         public void Train()

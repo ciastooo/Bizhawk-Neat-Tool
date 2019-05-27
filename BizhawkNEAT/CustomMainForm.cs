@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
                     {
                         fitnessChart.Series["Fitness"].Points.AddXY(network.Generation - 1, network.TopFitnessInPreviousGeneration);
                         fitnessChart.Series["AverageFitness"].Points.AddXY(network.Generation - 1, network.AverageFitnessInPreviousGeneration);
+                        SaveNetwork($"D:\\repos\\neatbackup\\neat.backup.{network.Generation}.json");
                     }
                     gameInformationHandler.Unpause();
                 }
@@ -106,9 +107,9 @@ namespace BizHawk.Client.EmuHawk
             start.Enabled = false;
             var bitmap = new Bitmap(networkGraph.Width, networkGraph.Height);
             networkGraph.Image = bitmap;
-            //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            //SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            //SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.UserPaint, true);
             gameInformationHandler.SaveGameState();
             network = new Network(gameInformationHandler, networkGraph.CreateGraphics());
             network.Init(Config.InputNodesCount, Config.ButtonNames.Length);
@@ -125,31 +126,7 @@ namespace BizHawk.Client.EmuHawk
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var json = new JObject();
-
-                var chartJson = new JObject();
-                chartJson.Add("Fitness", JToken.FromObject(fitnessChart.Series["Fitness"].Points.Select(p => p.YValues[0]).ToList()));
-                chartJson.Add("AverageFitness", JToken.FromObject(fitnessChart.Series["AverageFitness"].Points.Select(p => p.YValues[0]).ToList()));
-                json.Add("Chart", chartJson);
-
-                json.Add("ConnectionCounter", IdGenerator.ConnectionCounter);
-                json.Add("NodeCounter", IdGenerator.NodeCounter);
-
-                json.Add("Network", network.GetNetworkJson());
-
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "neat");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                using (var fileStream = saveFileDialog.OpenFile())
-                {
-                    using (var sw = new StreamWriter(fileStream))
-                    {
-                        sw.Write(json.ToString());
-                    }
-                }
-                //File.WriteAllText(path + $"{DateTime.Now.ToString("dd.MM.yyyy.HH.mm.ss")}.neat.json", json.ToString());
+                SaveNetwork();
             }
         }
 
@@ -167,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
                         var fitnessChartValues = chartJson["Fitness"].Values<double>();
                         fitnessChart.Series["Fitness"].Points.Clear();
                         var i = 0;
-                        foreach(var fitnessValue in fitnessChartValues)
+                        foreach (var fitnessValue in fitnessChartValues)
                         {
                             fitnessChart.Series["Fitness"].Points.AddXY(i, fitnessValue);
                             i++;
@@ -180,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
                         {
                             fitnessChart.Series["AverageFitness"].Points.AddXY(i, averageFitnessValue);
                             i++;
-                        };     
+                        };
 
                         IdGenerator.Reset(json.Value<int>("ConnectionCounter"), json.Value<int>("NodeCounter"));
 
@@ -188,6 +165,44 @@ namespace BizHawk.Client.EmuHawk
 
                         network = loadNetwork;
                     }
+                }
+            }
+        }
+
+        private void SaveNetwork(string filePath = null)
+        {
+            var json = new JObject();
+
+            var chartJson = new JObject();
+            chartJson.Add("Fitness", JToken.FromObject(fitnessChart.Series["Fitness"].Points.Select(p => p.YValues[0]).ToList()));
+            chartJson.Add("AverageFitness", JToken.FromObject(fitnessChart.Series["AverageFitness"].Points.Select(p => p.YValues[0]).ToList()));
+            json.Add("Chart", chartJson);
+
+            json.Add("ConnectionCounter", IdGenerator.ConnectionCounter);
+            json.Add("NodeCounter", IdGenerator.NodeCounter);
+
+            json.Add("Network", network.GetNetworkJson());
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "neat");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            if (String.IsNullOrEmpty(filePath))
+            {
+                using (var fileStream = saveFileDialog.OpenFile())
+                {
+                    using (var sw = new StreamWriter(fileStream))
+                    {
+                        sw.Write(json.ToString());
+                    }
+                }
+            }
+            else
+            {
+                using (var fileStream = File.CreateText(filePath))
+                {
+                    fileStream.Write(json.ToString());
                 }
             }
         }
