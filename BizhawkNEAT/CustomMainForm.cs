@@ -5,6 +5,7 @@ using BizhawkNEAT.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -159,26 +160,33 @@ namespace BizHawk.Client.EmuHawk
                 using (StreamReader reader = new StreamReader(openFileDialog.FileName))
                 {
                     JObject json = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                    if (!json.HasValues)
+                    if (json.HasValues)
                     {
-                        var network = new Network(gameInformationHandler, networkGraph.CreateGraphics());
-                        var fitnessChartValues = json.Value<int[]>("Fitness");
+                        var loadNetwork = new Network(gameInformationHandler, networkGraph.CreateGraphics());
+                        var chartJson = json.GetValue("Chart");
+                        var fitnessChartValues = chartJson["Fitness"].Values<double>();
                         fitnessChart.Series["Fitness"].Points.Clear();
-                        for (int i = 0; i < fitnessChartValues.Length; i++)
+                        var i = 0;
+                        foreach(var fitnessValue in fitnessChartValues)
                         {
-                            fitnessChart.Series["Fitness"].Points.AddXY(i, fitnessChartValues[i]);
-                        }
+                            fitnessChart.Series["Fitness"].Points.AddXY(i, fitnessValue);
+                            i++;
+                        };
 
-                        var averageFitnessChartValues = json.Value<double[]>("AverageFitness");
+                        var averageFitnessChartValues = chartJson["AverageFitness"].Values<double>();
                         fitnessChart.Series["AverageFitness"].Points.Clear();
-                        for (int i = 0; i < fitnessChartValues.Length; i++)
+                        i = 0;
+                        foreach (var averageFitnessValue in fitnessChartValues)
                         {
-                            fitnessChart.Series["AverageFitness"].Points.AddXY(i, averageFitnessChartValues[i]);
-                        }
+                            fitnessChart.Series["AverageFitness"].Points.AddXY(i, averageFitnessValue);
+                            i++;
+                        };     
 
                         IdGenerator.Reset(json.Value<int>("ConnectionCounter"), json.Value<int>("NodeCounter"));
 
-                        network.Init(json.GetValue("Network"));
+                        loadNetwork.Init(json.GetValue("Network"));
+
+                        network = loadNetwork;
                     }
                 }
             }

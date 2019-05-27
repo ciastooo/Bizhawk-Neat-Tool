@@ -70,11 +70,11 @@ namespace BizhawkNEAT.Utils
                     }
                 }
                 // Prevent dividing by 0
-                if(matchingGenesCount < 1)
+                var averageWeightDifference = 0d;
+                if (matchingGenesCount > 0)
                 {
-                    matchingGenesCount = 1;
+                    averageWeightDifference = weightDifference / matchingGenesCount;
                 }
-                var averageWeightDifference = weightDifference / matchingGenesCount;
 
                 connectionsDistance = Config.DisjointCoefficient * disjointConnections / Math.Max(sourceGenome.ConnectionGenes.Count, targetGenome.ConnectionGenes.Count);
                 connectionsDistance += averageWeightDifference * Config.WeightCoefficient;

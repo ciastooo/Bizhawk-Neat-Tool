@@ -31,7 +31,7 @@ namespace BizhawkNEAT.Neat
         public NodeGene(JToken json)
         {
             Id = json.Value<int>("Id");
-            Type = json.Value<NodeGeneType>("Type");
+            Type = (NodeGeneType)json.Value<int>("Type");
             Value = 0;
             IsReady = false;
         }

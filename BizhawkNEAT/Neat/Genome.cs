@@ -41,12 +41,12 @@ namespace BizhawkNEAT.Neat
         {
             ConnectionGenes = new Dictionary<int, ConnectionGene>();
             NodeGenes = new Dictionary<int, NodeGene>();
-            foreach (var nodeJson in json.Children()["NodeGenes"])
+            foreach (var nodeJson in json["NodeGenes"].Children())
             {
                 var node = new NodeGene(nodeJson);
                 AddNodeGene(node);
             }
-            foreach (var connectionJson in json.Children()["ConnectionGenes"])
+            foreach (var connectionJson in json["ConnectionGenes"].Children())
             {
                 var id = connectionJson.Value<int>("Key");
                 var value = connectionJson.Value<JToken>("Value");
@@ -65,6 +65,13 @@ namespace BizhawkNEAT.Neat
                 throw new Exception("Number of inputs does not match number of genome inputs");
             }
 
+            var connectionsToPropagate = ConnectionGenes.Values.Where(cg => cg.IsEnabled).ToList();
+
+            if(connectionsToPropagate.Count == 0)
+            {
+                return OutputNodes.Select(x => x.Value > 0).ToArray();
+            }
+
             foreach (var node in NodeGenes.Values)
             {
                 node.Value = 0;
@@ -77,7 +84,6 @@ namespace BizhawkNEAT.Neat
                 inputNodes[i].IsReady = true;
             }
 
-            var connectionsToPropagate = ConnectionGenes.Values.Where(cg => cg.IsEnabled).ToList();
 
             while (connectionsToPropagate.Count != 0)
             {
@@ -95,7 +101,6 @@ namespace BizhawkNEAT.Neat
                     nextNode.Value += previouesNode.Value * connectionGene.Weight;
                     propagatedConnections.Add(connectionGene);
 
-                    //TODO: refactor?
                     if (!connectionsToPropagate.Any(cg => cg.NextNodeId == connectionGene.NextNodeId && cg != connectionGene))
                     {
                         nextNode.Value = ActivationFunctions.Sigmoid.Count(nextNode.Value);

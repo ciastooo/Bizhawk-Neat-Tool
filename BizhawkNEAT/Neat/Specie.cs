@@ -34,7 +34,7 @@ namespace BizhawkNEAT.Neat
             Genomes = new List<Genome>();
             Name = json.Value<string>("Name");
             Staleness = json.Value<int>("Staleness");
-            foreach (var genomeJson in json.Children()["Genomes"])
+            foreach (var genomeJson in json["Genomes"].Children())
             {
                 Genomes.Add(new Genome(genomeJson));
             }
@@ -90,14 +90,6 @@ namespace BizhawkNEAT.Neat
                 childGenome.AddNodeGene(new NodeGene(node));
             }
 
-            foreach (var node in father.NodeGenes.Values)
-            {
-                if (!childGenome.NodeGenes.ContainsKey(node.Id))
-                {
-                    childGenome.AddNodeGene(new NodeGene(node));
-                }
-            }
-
             foreach (var motherConnectionGene in mother.ConnectionGenes)
             {
                 ConnectionGene newChildConnection;
@@ -115,31 +107,12 @@ namespace BizhawkNEAT.Neat
                         newChildConnection = new ConnectionGene(father.ConnectionGenes[connectionGeneId]);
                     }
                 }
-                else if (mother.Fitness != father.Fitness || coinToss)
+                else
                 {
                     newChildConnection = new ConnectionGene(motherConnectionGene.Value);
                 }
-                else
-                {
-                    continue;
-                }
 
                 childGenome.AddConnectionGene(newChildConnection, connectionGeneId);
-            }
-
-            if (mother.Fitness == father.Fitness)
-            {
-                foreach (var fatherConnectionGene in father.ConnectionGenes.Where(x => !childGenome.ConnectionGenes.ContainsKey(x.Key)))
-                {
-                    var coinToss = RandomGenerator.GetCoinToss();
-
-                    if (coinToss)
-                    {
-                        var connectionGeneId = fatherConnectionGene.Key;
-                        var newChildConnection = new ConnectionGene(fatherConnectionGene.Value);
-                        childGenome.AddConnectionGene(newChildConnection, connectionGeneId);
-                    }
-                }
             }
 
             return childGenome;

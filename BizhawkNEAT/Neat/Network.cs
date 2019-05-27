@@ -67,12 +67,18 @@ namespace BizhawkNEAT.Neat
 
         public void Init(JToken json)
         {
+            CurrentFrame = 0;
+            Timeout = Config.Timeout;
+            RightmostPosition = 0;
             Generation = json.Value<int>("Generation");
  
-            foreach(var specieJson in json.Children()["Species"])
+            foreach(var specieJson in json["Species"].Children())
             {
                 Species.Add(new Specie(specieJson));
             }
+
+            CurrentSpecie = Species.First();
+            CurrentPlayer = CurrentSpecie.Genomes.First();
         }
 
         public void Train()
