@@ -51,17 +51,7 @@ namespace BizhawkNEAT.Neat
                 var id = connectionJson.Value<int>("Key");
                 var value = connectionJson.Value<JToken>("Value");
 
-                var previousNodeId = value.Value<int>("PreviousNodeId");
-                var nextNodeId = value.Value<int>("NextNodeId");
-                var weight = value.Value<double>("Weight");
-                var isEnabled = value.Value<bool>("IsEnabled");
-
-                var connection = new ConnectionGene(
-                    NodeGenes[previousNodeId],
-                    NodeGenes[nextNodeId],
-                    weight,
-                    isEnabled
-                );
+                var connection = new ConnectionGene(value);
 
                 AddConnectionGene(connection, id);
             }
@@ -95,18 +85,21 @@ namespace BizhawkNEAT.Neat
 
                 foreach (var connectionGene in connectionsToPropagate)
                 {
-                    if (!connectionGene.PreviousNode.IsReady)
+                    var previouesNode = NodeGenes[connectionGene.PreviousNodeId];
+                    if (!previouesNode.IsReady)
                     {
                         continue;
                     }
+                    var nextNode = NodeGenes[connectionGene.NextNodeId];
 
-                    connectionGene.NextNode.Value += connectionGene.PreviousNode.Value * connectionGene.Weight;
+                    nextNode.Value += previouesNode.Value * connectionGene.Weight;
                     propagatedConnections.Add(connectionGene);
 
-                    if (!connectionsToPropagate.Any(cg => cg.NextNode.Id == connectionGene.NextNode.Id && cg != connectionGene))
+                    //TODO: refactor?
+                    if (!connectionsToPropagate.Any(cg => cg.NextNodeId == connectionGene.NextNodeId && cg != connectionGene))
                     {
-                        connectionGene.NextNode.Value = ActivationFunctions.Sigmoid.Count(connectionGene.NextNode.Value);
-                        connectionGene.NextNode.IsReady = true;
+                        nextNode.Value = ActivationFunctions.Sigmoid.Count(nextNode.Value);
+                        nextNode.IsReady = true;
                     }
                 }
 

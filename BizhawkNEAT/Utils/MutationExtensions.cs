@@ -34,7 +34,7 @@ namespace BizhawkNEAT.Utils
                 firstNode = tmp;
             }
 
-            var newConnection = new ConnectionGene(firstNode, secondNode);
+            var newConnection = new ConnectionGene(firstNode.Id, secondNode.Id);
             genome.AddConnectionGene(newConnection);
         }
 
@@ -46,16 +46,13 @@ namespace BizhawkNEAT.Utils
                 return;
             }
 
-            var firstNode = connection.PreviousNode;
-            var secondNode = connection.NextNode;
-
             var newNode = new NodeGene();
             genome.AddNodeGene(newNode);
 
-            var newPreviousConnection = new ConnectionGene(firstNode, newNode, 1);
+            var newPreviousConnection = new ConnectionGene(connection.PreviousNodeId, newNode.Id, 1);
             genome.AddConnectionGene(newPreviousConnection);
 
-            var newNextConnection = new ConnectionGene(newNode, secondNode, connection.Weight);
+            var newNextConnection = new ConnectionGene(newNode.Id, connection.NextNodeId, connection.Weight);
             genome.AddConnectionGene(newNextConnection);
 
             connection.Toggle(false);

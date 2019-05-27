@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
                 {
                     infoLabel.Text = $"Generation: {network.Generation}; MaxFitness: {network.TopFitnessInGeneration}; Specie: {network.CurrentSpecie.Name}; Genome: {network.CurrentSpecie.Genomes.IndexOf(network.CurrentPlayer)}/{network.CurrentSpecie.Genomes.Count}";
                     network.Train();
-                    if (fitnessChart.Series["Fitness"].Points.Count < network.Generation - 1)
+                    if (fitnessChart.Series["Fitness"].Points.Count < network.Generation)
                     {
                         fitnessChart.Series["Fitness"].Points.AddXY(network.Generation - 1, network.TopFitnessInPreviousGeneration);
                         fitnessChart.Series["AverageFitness"].Points.AddXY(network.Generation - 1, network.AverageFitnessInPreviousGeneration);

@@ -84,11 +84,11 @@ namespace BizhawkNEAT.Utils
 
             foreach (var connection in genome.ConnectionGenes.Values.Where(cg => cg.IsEnabled))
             {
-                var previousNodeToDraw = nodesToDraw[connection.PreviousNode.Id];
-                var nextNodeToDraw = nodesToDraw[connection.NextNode.Id];
+                var previousNodeToDraw = nodesToDraw[connection.PreviousNodeId];
+                var nextNodeToDraw = nodesToDraw[connection.NextNodeId];
 
                 var opacity = 160;
-                if (connection.PreviousNode.Value == 0)
+                if (genome.NodeGenes[connection.PreviousNodeId].Value == 0)
                 {
                     opacity = 32;
                 }
@@ -165,8 +165,8 @@ namespace BizhawkNEAT.Utils
             {
                 foreach (var connectionGene in connectionGenesToDraw)
                 {
-                    var previousNode = connectionGene.PreviousNode;
-                    var nextNode = connectionGene.NextNode;
+                    var previousNode = genome.NodeGenes[connectionGene.PreviousNodeId];
+                    var nextNode = genome.NodeGenes[connectionGene.NextNodeId];
 
                     var previousNodeToDraw = nodesToDraw[previousNode.Id];
                     var nextNodeToDraw = nodesToDraw[nextNode.Id];

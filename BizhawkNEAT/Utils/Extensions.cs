@@ -17,8 +17,8 @@ namespace BizhawkNEAT.Utils
         public static ConnectionGene GetConnection(this IDictionary<int, ConnectionGene> sourceDictionary, NodeGene source, NodeGene target)
         {
             return sourceDictionary.Values.Where(x =>
-                (x.PreviousNode.Id == source.Id && x.NextNode.Id == target.Id) ||
-                (x.PreviousNode.Id == target.Id && x.NextNode.Id == source.Id))
+                (x.PreviousNodeId == source.Id && x.NextNodeId == target.Id) ||
+                (x.PreviousNodeId == target.Id && x.NextNodeId == source.Id))
                 .FirstOrDefault();
         }
 

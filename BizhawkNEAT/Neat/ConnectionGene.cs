@@ -1,45 +1,55 @@
 ﻿using BizhawkNEAT.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace BizhawkNEAT.Neat
 {
     public class ConnectionGene
     {
-        public NodeGene PreviousNode { get; private set; }
-        public NodeGene NextNode { get; private set; }
+        public int PreviousNodeId { get; private set; }
+        public int NextNodeId { get; private set; }
         public double Weight { get; private set; }
         public bool IsEnabled { get; private set; }
 
-        public ConnectionGene(NodeGene previousNode, NodeGene nextNode)
+        public ConnectionGene(int previousNodeId, int nextNodeId)
         {
-            PreviousNode = previousNode;
-            NextNode = nextNode;
+            PreviousNodeId = previousNodeId;
+            NextNodeId = nextNodeId;
             Weight = RandomGenerator.NewWeight();
             IsEnabled = true;
         }
 
-        public ConnectionGene(NodeGene previousNode, NodeGene nextNode, double weight, bool isEnabled)
+        public ConnectionGene(int previousNodeId, int nextNodeId, double weight, bool isEnabled)
         {
-            PreviousNode = previousNode;
-            NextNode = nextNode;
+            PreviousNodeId = previousNodeId;
+            NextNodeId = nextNodeId;
             Weight = weight;
             IsEnabled = isEnabled;
         }
 
-        public ConnectionGene(NodeGene previousNode, NodeGene nextNode, double weight)
+        public ConnectionGene(int previousNodeId, int nextNodeId, double weight)
         {
-            PreviousNode = previousNode;
-            NextNode = nextNode;
+            PreviousNodeId = previousNodeId;
+            NextNodeId = nextNodeId;
             Weight = weight;
             IsEnabled = true;
         }
 
         public ConnectionGene(ConnectionGene source)
         {
-            PreviousNode = new NodeGene(source.PreviousNode);
-            NextNode = new NodeGene(source.NextNode);
+            PreviousNodeId = source.PreviousNodeId;
+            NextNodeId = source.NextNodeId;
             Weight = source.Weight;
             IsEnabled = source.IsEnabled;
         }
+
+        public ConnectionGene(JToken json)
+        {
+            PreviousNodeId = json.Value<int>("PreviousNodeId");
+            NextNodeId = json.Value<int>("NextNodeId");
+            Weight = json.Value<double>("Weight");
+            IsEnabled = json.Value<bool>("IsEnabled");
+        }
+
 
         public void SetWeight(double newWeight)
         {

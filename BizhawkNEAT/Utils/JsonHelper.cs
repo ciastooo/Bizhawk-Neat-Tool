@@ -51,8 +51,8 @@ namespace BizhawkNEAT.Utils
         {
             var json = new JObject();
 
-            json.Add("PreviousNodeId", connectionGene.PreviousNode.Id);
-            json.Add("NextNodeId", connectionGene.NextNode.Id);
+            json.Add("PreviousNodeId", connectionGene.PreviousNodeId);
+            json.Add("NextNodeId", connectionGene.NextNodeId);
             json.Add("Weight", connectionGene.Weight);
             json.Add("IsEnabled", connectionGene.IsEnabled);
 
