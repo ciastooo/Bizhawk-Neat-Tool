@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BizhawkNEAT.Neat.ConnectionGene">
+    <Position X="2.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAABAAAAAEAAAAAACAAABAAAAAAAAAAAgA=</HashCode>
+      <FileName>Neat\ConnectionGene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizhawkNEAT.Neat.Genome">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAgAEAAAAAACAAAAAAAIAAAAAAAABEAAAAAAQgAJAA=</HashCode>
+      <FileName>Neat\Genome.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ConnectionGenes" />
+      <Property Name="HiddenNodes" />
+      <Property Name="InputNodes" />
+      <Property Name="NodeGenes" />
+      <Property Name="OutputNodes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="BizhawkNEAT.Neat.Network">
+    <Position X="5" Y="4.5" Width="2.5" />
+    <AssociationLine Name="CurrentPlayer" Type="BizhawkNEAT.Neat.Genome" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.469" Y="4.5" />
+        <Point X="5.469" Y="2.75" />
+        <Point X="4.75" Y="2.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="CurrentSpecie" Type="BizhawkNEAT.Neat.Specie">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.006" Y="0.118" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Species" Type="BizhawkNEAT.Neat.Specie">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.002" Y="0.399" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AACkAICAAIMAAIAAMAIAAAAAAAICBAIAAEICgAAAgBE=</HashCode>
+      <FileName>Neat\Network.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CurrentPlayer" />
+      <Property Name="CurrentSpecie" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Species" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="BizhawkNEAT.Neat.NodeGene">
+    <Position X="0.5" Y="0.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAgAAAAAAA=</HashCode>
+      <FileName>Neat\NodeGene.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="BizhawkNEAT.Neat.Specie">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <AssociationLine Name="Genomes" Type="BizhawkNEAT.Neat.Genome">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.387" Y="0.06" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAEAAAQAAIAAAAAAAAAAAAQBAAAAAAAAAAAAkAIAAEI=</HashCode>
+      <FileName>Neat\Specie.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Progenitor" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Genomes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="BizHawk.Client.EmuHawk.CustomMainForm">
+    <Position X="8.75" Y="4" Width="1.5" />
+    <Members>
+      <Method Name="AskSaveChanges" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="start" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>FgQIAAgAACBASIAgAQCEQAACAAAIAAAAhgAAIAAAQAA=</HashCode>
+      <FileName>CustomMainForm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="gameInformationHandler" />
+      <Property Name="network" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BizhawkNEAT.GameInformationHandler">
+    <Position X="11" Y="4.25" Width="2" />
+    <Members>
+      <Method Name="SetEmuApi" Hidden="true" />
+      <Method Name="SetJoypadApi" Hidden="true" />
+      <Method Name="SetMemoryApi" Hidden="true" />
+      <Method Name="SetSaveStateApi" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AwQgQIgAAAAgYAAACAEEAQBAAAAgAAAAggAYAAQEAAA=</HashCode>
+      <FileName>GameInformationHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="BizhawkNEAT.Neat.NodeGeneType">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Neat\NodeGeneType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

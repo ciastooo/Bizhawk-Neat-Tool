@@ -216,7 +216,7 @@ namespace BizhawkNEAT.Utils
             return nodesToDraw;
         }
 
-        private class NodeDrawElement
+        private struct NodeDrawElement
         {
             public float X { get; set; }
             public float Y { get; set; }

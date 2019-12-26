@@ -8,19 +8,19 @@ namespace BizhawkNEAT.Utils
         // Species distance coefficients
         public static double DisjointCoefficient { get; private set; } = 2;
         public static double WeightCoefficient { get; private set; } = 0.4;
-        public static double SpecieThreshold { get; private set; } = 3.5;
+        public static double SpecieThreshold { get; private set; } = 2.2;
 
         // Mutations
         public static double MutationAddConnectionProbability = 0.7;
-        public static double MutationAddConnectionToBiasProbability = 0.3;
-        public static double MutationAddNodeProbability = 0.3;
+        public static double MutationAddConnectionToBiasProbability = 0.1;
+        public static double MutationAddNodeProbability = 0.5;
         public static double MutationEnableConnectionProbability = 0.2;
-        public static double MutationDisableConnectionProbability = 0.3;
-        public static double MutationAdjustWeightProbability = 0.25;
-        public static double MutationPerturbateWeightProbability = 0.1;
-        public static double WeightStep { get; private set; } = 0.1;
+        public static double MutationDisableConnectionProbability = 0.4;
+        public static double MutationAdjustWeightProbability = 0.4;
+        public static double MutationPerturbateWeightProbability = 0.2;
+        public static double WeightStep { get; private set; } = 0.2;
 
-        public static int Population { get; private set; } = 10;
+        public static int Population { get; private set; } = 300;
         public static int StalenessThreshold { get; private set; } = 15;
         public static double CrossoverChance { get; private set; } = 0.75;
 

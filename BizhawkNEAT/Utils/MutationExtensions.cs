@@ -17,12 +17,19 @@ namespace BizhawkNEAT.Utils
             }
 
             var secondNode = genome.NodeGenes.Values.GetRandomElement();
+            // TODO: Fix this hack that prevent possible endless loop
+            int limiter = 0;
             while (firstNode.Id == secondNode.Id ||
                    genome.ConnectionGenes.GetConnection(firstNode, secondNode) != null ||
                    firstNode.Type == NodeGeneType.Input && secondNode.Type == NodeGeneType.Input ||
                    firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Output)
             {
                 secondNode = genome.NodeGenes.Values.GetRandomElement();
+                if(limiter > 100)
+                {
+                    return;
+                }
+                limiter++;
             }
 
             if (firstNode.Type == NodeGeneType.Output && secondNode.Type == NodeGeneType.Hidden ||

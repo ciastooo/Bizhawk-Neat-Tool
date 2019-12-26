@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
                         var averageFitnessChartValues = chartJson["AverageFitness"].Values<double>();
                         fitnessChart.Series["AverageFitness"].Points.Clear();
                         i = 0;
-                        foreach (var averageFitnessValue in fitnessChartValues)
+                        foreach (var averageFitnessValue in averageFitnessChartValues)
                         {
                             fitnessChart.Series["AverageFitness"].Points.AddXY(i, averageFitnessValue);
                             i++;
